@@ -29,20 +29,37 @@ def get_ai_response(agent, user_input: str, df: pd.DataFrame) -> tuple:
             response = agent.invoke({"input": user_input})
             ai_response = response.get("output", "Sorry, I encountered an error.")
 
+            # Clean response dari debugging output
+            from src.core.response_cleaner import (
+                clean_agent_response,
+                extract_final_answer,
+            )
+
+            cleaned_response = extract_final_answer(ai_response)
+
+            # Jika masih ada debugging info, paksa clean
+            if any(
+                debug_word in cleaned_response.lower()
+                for debug_word in ["thought:", "action:", "do i need"]
+            ):
+                cleaned_response = clean_agent_response(cleaned_response)
+
             # Check if response contains analysis output that should be displayed as-is
             if (
-                "ANALYSIS_OUTPUT_START" in ai_response
-                and "ANALYSIS_OUTPUT_END" in ai_response
+                "ANALYSIS_OUTPUT_START" in cleaned_response
+                and "ANALYSIS_OUTPUT_END" in cleaned_response
             ):
                 # Extract the analysis content between the tags
                 start_tag = "ANALYSIS_OUTPUT_START\n"
                 end_tag = "\nANALYSIS_OUTPUT_END"
-                start_idx = ai_response.find(start_tag)
-                end_idx = ai_response.find(end_tag)
+                start_idx = cleaned_response.find(start_tag)
+                end_idx = cleaned_response.find(end_tag)
 
                 if start_idx != -1 and end_idx != -1:
                     # Get the pure analysis output
-                    analysis_content = ai_response[start_idx + len(start_tag) : end_idx]
+                    analysis_content = cleaned_response[
+                        start_idx + len(start_tag) : end_idx
+                    ]
                     return analysis_content, []
 
             # Check if recommendations should be shown
@@ -57,7 +74,7 @@ def get_ai_response(agent, user_input: str, df: pd.DataFrame) -> tuple:
                     recommendations
                 )
 
-            return ai_response, recommendations
+            return cleaned_response, recommendations
 
         except Exception as e:
             st.error(f"AI Agent error: {str(e)}")

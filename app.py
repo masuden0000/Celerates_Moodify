@@ -8,7 +8,6 @@ from src.data.data_manager import load_music_data
 from src.ui.styles import load_custom_css
 from src.ui.ui_components import (
     render_mood_buttons,
-    render_song_card,
     render_statistics,
 )
 
@@ -71,10 +70,6 @@ def main():
                 unsafe_allow_html=True,
             )
 
-            # Show recommendations if available
-            if "recommendations" in message and message["recommendations"]:
-                for i, song in enumerate(message["recommendations"]):
-                    render_song_card(song, i)
 
     # Quick mood buttons
     mood_prompt = render_mood_buttons()

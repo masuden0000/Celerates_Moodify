@@ -7,24 +7,6 @@ import streamlit as st
 # MINIMALIST UI COMPONENTS
 # =============================================================================
 
-
-def render_song_card(song: Dict, index: int):
-    """Render a minimalist song recommendation card"""
-    st.markdown(
-        f"""
-    <div class="song-card">
-        <div class="song-title">{song['track_name']}</div>
-        <div class="song-artist">{song['artist_name']} • {song.get('genre', 'Pop')}</div>
-        <div class="song-stats">
-            <span class="stat-badge">Popularity {song['popularity']}/100</span>
-            <span class="stat-badge">{song.get('duration_min', 3.5):.1f} min</span>
-        </div>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
-
-
 def render_mood_buttons():
     """Render minimalist mood selection buttons"""
     st.markdown('<div class="mood-buttons">', unsafe_allow_html=True)
