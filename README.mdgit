@@ -1,0 +1,1 @@
+"# Celerates_Moodify"  initgit add .gitignore    # PENTING: Add ini dulu!git add .git status           # Cek file yang ter-addgit commit -m "first commit: Moodify AI - Enhanced Indonesian Music Recommendation System"git branch -M maingit remote add origin https://github.com/masuden0000/Celerates_Moodify.gitgit push -u origin main
