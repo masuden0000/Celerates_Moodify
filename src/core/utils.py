@@ -228,5 +228,10 @@ def process_user_input(user_input: str, agent, df: pd.DataFrame):
 
     st.session_state.messages.append(bot_message)
 
+    # Sync with current chat session after messages are added
+    from src.ui.sidebar import sync_current_chat
+
+    sync_current_chat()
+
     # Rerun to show new messages
     st.rerun()

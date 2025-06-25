@@ -4,9 +4,11 @@ import streamlit as st
 # MINIMALIST STYLING
 # =============================================================================
 
+
 def load_custom_css():
     """Load minimal, clean CSS styling"""
-    st.markdown("""
+    st.markdown(
+        """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
     
@@ -104,34 +106,10 @@ def load_custom_css():
     }
     
     .stat-badge {
-        background: #f5f5f5;
-        padding: 0.25rem 0.75rem;
+        background: #f5f5f5;        padding: 0.25rem 0.75rem;
         border-radius: 20px;
         color: #666;
         border: 1px solid #e0e0e0;
-    }
-    
-    /* Mood Buttons */
-    .mood-buttons {
-        margin: 2rem 0;
-        text-align: center;
-    }
-    
-    .mood-button {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        margin: 0.25rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 0.9rem;
-        color: #1a1a1a;
-    }
-    
-    .mood-button:hover {
-        border-color: #1a1a1a;
-        background: #f9f9f9;
     }
     
     /* Statistics */
@@ -199,6 +177,26 @@ def load_custom_css():
         color: #1a1a1a;
     }
     
+    /* Main content buttons - ensure they override sidebar styling */
+    .stMain .stButton > button,
+    .main .stButton > button {
+        background: white !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 8px !important;
+        color: #1a1a1a !important;
+        font-weight: 400 !important;
+        transition: all 0.2s ease !important;
+        width: 100% !important;
+        padding: 0.75rem !important;
+    }
+    
+    .stMain .stButton > button:hover,
+    .main .stButton > button:hover {
+        border-color: #1a1a1a !important;
+        background: #f9f9f9 !important;
+        color: #1a1a1a !important;
+    }
+    
     /* Spinner */
     .stSpinner > div > div {
         border-color: #1a1a1a !important;
@@ -227,8 +225,129 @@ def load_custom_css():
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
+    }    
+    /* ========================================
+       SIDEBAR STYLES - ChatGPT Like
+    ======================================== */
+    
+    /* Streamlit Sidebar Styling */
+    .css-1d391kg, .css-1lcbmhc, .css-1y4p8pa {
+        background-color: #171717 !important;
+        color: #ececec !important;
     }
     
+    /* Sidebar content */
+    .css-17eq0hr {
+        background-color: #171717 !important;
+        color: #ececec !important;
+    }
+    
+    /* Sidebar buttons */
+    .st-emotion-cache-13kn1tw {
+    display: none;
+    width: 0%;
+    }
+    
+    .st-emotion-cache-1jw38fe {
+    width: 100%;
+    }
+    
+    .e1quxfqw8 {
+    display: none;
+    }
+      /* Sidebar buttons - ONLY apply to sidebar */
+    .stSidebar .stButton button {
+        background-color: #202123 !important;
+        color: #ececec !important;
+        border: 1px solid #363636 !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .stSidebar .stButton button:hover {
+        background-color: #40414f !important;
+        border-color: #565869 !important;
+    }
+    
+    .stSidebar .stButton button[kind="primary"] {
+        background-color: #343541 !important;
+        border-color: #565869 !important;
+    }
+    
+    .stSidebar .stButton button[kind="primary"]:hover {
+        background-color: #40414f !important;
+    }
+    
+    /* Sidebar text */
+    .css-17eq0hr h3 {
+        color: #ececec !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+    
+    .css-17eq0hr p, .css-17eq0hr div {
+        color: #ececec !important;
+    }
+    
+    /* Sidebar markdown */
+    .css-17eq0hr .markdown-text-container {
+        color: #ececec !important;
+    }
+    
+    /* Info boxes in sidebar */
+    .css-17eq0hr .element-container .stAlert {
+        background-color: #2a2b32 !important;
+        color: #ececec !important;
+        border: 1px solid #363636 !important;
+    }
+    
+    /* Warning boxes in sidebar */
+    .css-17eq0hr .element-container .stWarning {
+        background-color: #dc3545 !important;
+        color: #ffffff !important;
+        border: 1px solid #dc3545 !important;
+    }
+    
+    /* CRITICAL: Ensure main content buttons are NOT affected by sidebar styling */
+    .stMain .stButton button,
+    .main .stButton button,
+    div[data-testid="stMain"] .stButton button,
+    section[data-testid="stMain"] .stButton button {
+        background: white !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 8px !important;
+        color: #1a1a1a !important;
+        font-weight: 400 !important;
+        transition: all 0.2s ease !important;
+        padding: 0.75rem !important;
+    }
+    
+    .stMain .stButton button:hover,
+    .main .stButton button:hover,
+    div[data-testid="stMain"] .stButton button:hover,
+    section[data-testid="stMain"] .stButton button:hover {
+        border-color: #1a1a1a !important;
+        background: #f9f9f9 !important;
+        color: #1a1a1a !important;
+    }
+    
+    /* Sidebar scrollbar */
+    .css-17eq0hr::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .css-17eq0hr::-webkit-scrollbar-track {
+        background: #171717;
+    }
+    
+    .css-17eq0hr::-webkit-scrollbar-thumb {
+        background: #4a4a4a;
+        border-radius: 2px;
+    }
+    
+    .css-17eq0hr::-webkit-scrollbar-thumb:hover {
+        background: #5a5a5a;
+    }
+
     /* Hide Streamlit elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
@@ -252,4 +371,6 @@ def load_custom_css():
         background: #a1a1a1;
     }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )

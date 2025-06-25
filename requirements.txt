@@ -1,88 +1,42 @@
-# ============================================================================
-# MOODIFY AI - PROJECT REQUIREMENTS
-# ============================================================================
-# Optimized and tested dependencies for Moodify AI music recommendation system
+# Core dependencies
+streamlit>=1.28.0
+pandas>=2.0.0
+numpy>=1.24.0
 
-# ============================================================================
-# CORE FRAMEWORK & DATA PROCESSING
-# ============================================================================
-streamlit>=1.40.0,<1.50.0      # Web application framework
-pandas>=2.0.0,<2.4.0           # Data manipulation and analysis  
-numpy>=1.24.0,<2.2.0           # Numerical computing (compatible with numba)
+# AI/ML libraries
+openai>=1.0.0
+langchain>=0.1.0
+langchain-openai>=0.0.5
 
-# ============================================================================
-# AI & LANGUAGE MODELS (OPTIONAL - App works without these)
-# ============================================================================
-langchain>=0.3.0,<0.4.0        # LLM framework
-langchain-cohere>=0.4.0,<0.5.0 # Cohere integration for LangChain
-langchain-community>=0.3.0,<0.4.0  # Community tools for LangChain
-langchain-core>=0.3.0,<0.4.0   # Core LangChain components
-cohere>=5.0.0,<6.0.0           # Cohere AI API client
+# Music/Audio processing
+spotipy>=2.22.1
+librosa>=0.10.0
+soundfile>=0.12.1
 
-# ============================================================================
-# DATA VISUALIZATION
-# ============================================================================
-plotly>=5.0.0,<6.2.0           # Interactive plotting library
-altair>=5.0.0,<6.0.0           # Statistical visualization (used by Streamlit)
+# Data processing
+requests>=2.31.0
+python-dotenv>=1.0.0
 
-# ============================================================================
-# WEB SEARCH & HTTP (OPTIONAL - For music info search)
-# ============================================================================
-googlesearch-python>=1.2.0     # Google search functionality
-requests>=2.31.0,<3.0.0        # HTTP library
-beautifulsoup4>=4.12.0,<5.0.0  # HTML parsing
+# JSON handling (built-in, but listing for clarity)
+json5>=0.9.0
 
-# ============================================================================
-# CONFIGURATION & ENVIRONMENT
-# ============================================================================
-python-dotenv>=1.0.0,<2.0.0    # Environment variables from .env files
-pyyaml>=6.0.0,<7.0.0           # YAML parser
+# Date/Time handling (built-in datetime module used)
+python-dateutil>=2.8.0
 
-# ============================================================================
-# DATA VALIDATION & TYPE CHECKING
-# ============================================================================
-pydantic>=2.0.0,<3.0.0         # Data validation using Python type hints
-typing-extensions>=4.0.0       # Type hints backport
+# File handling
+pathlib>=1.0.0
 
-# ============================================================================
-# UTILITIES
-# ============================================================================
-tqdm>=4.60.0,<5.0.0            # Progress bars
-python-dateutil>=2.8.0         # Date/time utilities
+# Web scraping (if needed for music data)
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
 
-# ============================================================================
-# INSTALLATION INSTRUCTIONS
-# ============================================================================
-# 1. Create virtual environment:
-#    python -m venv venv
-#
-# 2. Activate virtual environment:
-#    Windows: venv\Scripts\activate
-#    Linux/Mac: source venv/bin/activate
-#
-# 3. Install dependencies:
-#    pip install -r requirements.txt
-#
-# 4. Create .env file with your API keys:
-#    COHERE_API_KEY=your_cohere_api_key_here
-#
-# 5. Run the application:
-#    streamlit run app.py
-#
-# ============================================================================
-# ALTERNATIVE INSTALLATION OPTIONS
-# ============================================================================
-# For minimal installation (basic features only):
-#   pip install -r requirements-minimal.txt
-#
-# For production deployment:
-#   pip install -r requirements-production.txt
-#
-# ============================================================================
-# TROUBLESHOOTING
-# ============================================================================
-# If you encounter dependency conflicts:
-# 1. Use a fresh virtual environment
-# 2. Try installing with: pip install --upgrade pip
-# 3. Install one requirement file at a time
-# 4. Check for system-specific packages that might conflict
+# Optional: Database support
+sqlite3>=0.0.0  # Built-in
+
+# Optional: Enhanced JSON handling
+ujson>=5.8.0
+
+# Development dependencies (optional)
+black>=23.0.0
+flake8>=6.0.0
+pytest>=7.4.0

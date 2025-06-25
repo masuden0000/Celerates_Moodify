@@ -1,15 +1,21 @@
+from datetime import datetime
+
 import streamlit as st
 
 from src.core.ai_agent import setup_ai_agent
 from src.core.utils import get_ai_response, initialize_session_state, process_user_input
 from src.data.data_manager import load_music_data
+from src.ui.sidebar import (
+    export_chat_history,
+    handle_sidebar_actions,
+    initialize_chat_history,
+    render_sidebar,
+    sync_current_chat,
+)
 
 # Import all modules
 from src.ui.styles import load_custom_css
-from src.ui.ui_components import (
-    render_mood_buttons,
-    render_statistics,
-)
+from src.ui.ui_components import render_statistics
 
 # =============================================================================
 # MAIN APPLICATION
@@ -19,13 +25,34 @@ st.set_page_config(
     page_title="Moodify AI",
     page_icon="🎵",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 
 def main():
     """Main application function with minimalist design"""
 
+    # Initialize chat history first
+    initialize_chat_history()
+
+    # Handle sidebar actions
+    handle_sidebar_actions()
+
+    # Handle export download
+    if "export_data" in st.session_state:
+        st.download_button(
+            label="📁 Download Chat History",
+            data=st.session_state.export_data,
+            file_name=f"moodify_chat_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+            mime="application/json",
+            key="download_export",
+        )
+        del st.session_state.export_data
+
+    # Render sidebar
+    render_sidebar()
+
+    # Main content
     with st.container():
         st.markdown(
             """        <div style="text-align: center; padding: 2rem 1rem;">
@@ -41,9 +68,7 @@ def main():
         </div>
         """,
             unsafe_allow_html=True,
-        )
-
-    # Initialize
+        )  # Initialize
     initialize_session_state()
     load_custom_css()  # Load data and setup agent
     if st.session_state.df is None:
@@ -70,16 +95,12 @@ def main():
                 unsafe_allow_html=True,
             )
 
-
-    # Quick mood buttons
-    mood_prompt = render_mood_buttons()
-    if mood_prompt:
-        process_user_input(mood_prompt, agent, df)  # Chat input
+    # Chat input
     user_input = st.chat_input("Cerita mood kamu atau tanya tentang musik...")
     if user_input:
         process_user_input(user_input, agent, df)
-
-    # Statistics
+        # Sync with current chat after new message
+        sync_current_chat()  # Statistics
     st.markdown("---")
     render_statistics(df)
 
