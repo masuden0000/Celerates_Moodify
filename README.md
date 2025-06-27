@@ -1,18 +1,88 @@
-# Moodify AI - Music Recommendation System
+# 🎵 Moodify AI - Music Recommendation System
 
-## 🎵 Overview
-
-Moodify AI adalah aplikasi rekomendasi musik berbasis AI yang menggunakan analisis mood dan natural language processing untuk memberikan rekomendasi musik yang dipersonalisasi. Aplikasi ini menggunakan ChatGPT-style interface untuk interaksi yang natural dan intuitif.
+Aplikasi rekomendasi musik berbasis AI yang menggunakan **Google Gemini** untuk analisis mood dan memberikan rekomendasi musik yang dipersonalisasi melalui interface ChatGPT-style.
 
 ## ✨ Key Features
 
+- **🤖 Google Gemini AI** - Powered by Google's Gemini AI (gratis!)
 - **🗣️ ChatGPT-style Interface** - Natural conversation dengan AI agent
 - **📝 Chat History Management** - Multiple chat sessions dengan auto-title generation
-- **🎵 Music Recommendations** - Berdasarkan mood dan preferensi pengguna
-- **🧠 AI-Powered Analysis** - Advanced music feature analysis
+- **🎵 Smart Music Recommendations** - Berdasarkan mood dan preferensi pengguna
+- **🧠 Advanced Analysis** - Music feature analysis dengan ML
 - **📱 Responsive Design** - Modern UI dengan dark sidebar theme
 - **💾 Export Functionality** - Export chat history ke JSON
 - **🔄 Real-time Sync** - Auto-sync chat sessions dan messages
+- **📊 Data Visualization** - Interactive charts dengan Plotly
+
+## � Quick Start
+
+### Prerequisites
+
+- Python 3.11 (recommended) atau 3.12
+- Git dengan Git LFS support
+- Google AI Studio API Key (gratis!)
+
+### Installation
+
+1. **Clone repository:**
+   ```bash
+   git clone https://github.com/masuden0000/Celerates_Moodify.git
+   cd Celerates_Moodify
+   ```
+
+2. **Create virtual environment:**
+   ```bash
+   # Windows
+   py -3.11 -m venv venv
+   venv\Scripts\activate
+   
+   # Linux/Mac
+   python3.11 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Setup Google Gemini API:**
+   - Kunjungi [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Buat API key gratis
+   - Buat file `.streamlit/secrets.toml`:
+   ```toml
+   [google]
+   api_key = "your_google_gemini_api_key_here"
+   ```
+
+5. **Download data (Git LFS):**
+   ```bash
+   git lfs pull
+   ```
+
+6. **Run the application:**
+   ```bash
+   streamlit run app.py
+   ```
+
+7. **Open browser:**
+   - Local: http://localhost:8501
+   - Network: akan ditampilkan di terminal
+
+## 🎯 How to Use
+
+1. **Start conversation** - Ketik mood atau preferensi musik Anda
+2. **Get recommendations** - AI akan analisis dan berikan rekomendasi
+3. **Explore data** - Lihat visualisasi dan statistik musik
+4. **Multiple chats** - Kelola berbagai sesi percakapan
+5. **Export history** - Download riwayat chat dalam format JSON
+
+### Example Prompts:
+- "Lagi sedih nih, kasih lagu yang cocok"
+- "Mau workout, recommend lagu energik"
+- "Analisis musik happy dong"
+- "Siapa itu Taylor Swift?"
+- "Lagu indie rock yang bagus apa?"
 
 ## 🏗️ Architecture
 
@@ -20,34 +90,28 @@ Moodify AI adalah aplikasi rekomendasi musik berbasis AI yang menggunakan analis
 
 ```
 DSAI_Moodify AI (2)/
-├── .streamlit/            # Streamlit configuration
-├── .vscode/              # VS Code settings
-├── src/                  # Source code organized in modules
-│   ├── core/            # Core business logic
-│   │   ├── __init__.py
-│   │   ├── config.py           # Configuration dan constants
-│   │   ├── music_analyzer.py   # Music analysis dan recommendations
-│   │   ├── ai_agent.py         # AI agent setup
-│   │   ├── utils.py            # Utility functions
-│   │   ├── response_cleaner.py # AI response processing
-│   │   └── debug_logger.py     # Debug utilities
-│   ├── data/            # Data management
-│   │   ├── __init__.py
-│   │   └── data_manager.py     # Data processing dan loading
-│   └── ui/              # User interface components
-│       ├── __init__.py
-│       ├── styles.py           # CSS styling (ChatGPT-like)
-│       ├── ui_components.py    # Statistics display
-│       └── sidebar.py          # Chat history sidebar
-├── app.py               # Main application file
-├── requirements.txt     # Dependencies
-├── spotify_data.csv     # Music dataset
-└── README.md           # Project documentation
+├── .streamlit/
+│   ├── config.toml         # Streamlit configuration
+│   └── secrets.toml        # API keys (tidak di-commit)
+├── src/
+│   ├── core/
+│   │   ├── ai_agent.py           # Google Gemini setup
+│   │   ├── music_analyzer.py     # Music analysis
+│   │   ├── utils.py              # Utility functions
+│   │   └── config.py             # Configuration
+│   ├── data/
+│   │   ├── data_manager.py       # Data processing
+│   │   └── lfs_handler.py        # Git LFS support
+│   └── ui/
+│       ├── sidebar.py            # Chat management
+│       ├── styles.py             # CSS styling
+│       └── ui_components.py      # UI components
+├── app.py                  # Main application
+├── requirements.txt        # Dependencies
+├── packages.txt           # System dependencies
+├── spotify_data.csv       # Music dataset (via Git LFS)
+└── README.md             # This file
 ```
-
-### 📝 Module Descriptions
-
-#### `app.py` - Main Application
 - Entry point aplikasi Streamlit
 - Orchestrates all modules dan components
 - Handles main chat flow dan user interactions
@@ -264,63 +328,106 @@ beautifulsoup4>=4.12.0     # Web scraping
 - **Caching Strategy** - `@st.cache_data` for data loading
 - **Memory Management** - Proper cleanup of large objects
 
-## 📝 Development Guide
+## 🚀 Deployment
 
-### Adding New Features
+### Streamlit Cloud (Recommended)
 
-1. **Identify Module:**
-   - Chat functionality → `src/ui/sidebar.py`
-   - Music analysis → `src/core/music_analyzer.py`
-   - AI features → `src/core/ai_agent.py`
-   - UI styling → `src/ui/styles.py`
-   - Data processing → `src/data/data_manager.py`
+1. **Fork/Push ke GitHub**
+2. **Kunjungi** [share.streamlit.io](https://share.streamlit.io)
+3. **Connect GitHub** account
+4. **Deploy** repository: `masuden0000/Celerates_Moodify`
+5. **Add secrets** di Streamlit Cloud dashboard:
+   ```
+   [google]
+   api_key = "your_google_gemini_api_key"
+   ```
 
-2. **Best Practices:**
-   - Follow existing code style dan patterns
-   - Add comprehensive docstrings
-   - Handle errors gracefully
-   - Test dengan dan without optional dependencies
-   - Maintain backward compatibility
+### Local Development Server
 
-3. **Testing Strategy:**
-   - Test main functionality
-   - Test error scenarios  
-   - Test responsive design
-   - Test export/import functionality
+```bash
+# Production mode
+streamlit run app.py --server.port 8501
 
-### Code Organization Principles
+# Development mode dengan auto-reload
+streamlit run app.py --server.runOnSave true
+```
 
-- **Separation of Concerns** - Clear module responsibilities
-- **Modular Design** - Independent, reusable components
-- **Error Resilience** - Graceful failure handling
-- **User Experience** - Intuitive, responsive interface
-- **Scalability** - Easy to extend dan maintain
+## 🐛 Troubleshooting
 
-## 🎯 Roadmap
+### Common Issues
 
-### Planned Features
-- **🎵 Playlist Integration** - Export to Spotify/Apple Music
-- **👤 User Profiles** - Save preferences dan history
-- **📊 Advanced Analytics** - Detailed usage insights
-- **� Social Features** - Share recommendations
-- **🎤 Voice Input** - Speech-to-text integration
-- **📱 Mobile App** - Native mobile application
+#### 1. Python Version Error
+```
+TypeError: typevar() got an unexpected keyword argument 'default'
+```
+**Solution:** Gunakan Python 3.11 atau 3.12, bukan 3.13
+```bash
+py -3.11 -m venv venv
+```
 
-### Technical Improvements
-- **Database Integration** - Persistent data storage
-- **API Optimization** - Faster response times
-- **Advanced Caching** - Improved performance
-- **Multi-language Support** - Internationalization
-- **Real-time Updates** - WebSocket integration
+#### 2. Git LFS File Not Found
+```
+spotify_data.csv not found!
+```
+**Solution:** Pull LFS files
+```bash
+git lfs pull
+```
 
-## 📄 License
+#### 3. Google API Key Error
+```
+API key tidak valid
+```
+**Solution:** 
+- Periksa API key di `.streamlit/secrets.toml`
+- Pastikan API key dari [Google AI Studio](https://makersuite.google.com/app/apikey)
 
-This project is created for educational purposes as part of the Celerates program.
+#### 4. Package Installation Error
+**Solution:** Upgrade pip dan install ulang
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+#### 5. Streamlit App Tidak Load
+**Solution:** Clear cache
+```bash
+streamlit cache clear
+```
+
+### Performance Tips
+
+- **Memory**: Dataset besar, gunakan `@st.cache_data`
+- **Loading**: Tunggu "Data loaded successfully!" sebelum interact
+- **Browser**: Gunakan Chrome/Firefox untuk performa terbaik
+- **Internet**: Butuh koneksi untuk Google Gemini API
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow the development guide dan maintain code quality standards.
+1. **Fork** repository
+2. **Create feature branch:** `git checkout -b feature/AmazingFeature`
+3. **Commit changes:** `git commit -m 'Add AmazingFeature'`
+4. **Push to branch:** `git push origin feature/AmazingFeature`
+5. **Open Pull Request**
 
-## 📞 Support
+## 📄 License
 
-For questions or issues, please refer to the troubleshooting section atau create an issue in the repository. 
+Distributed under MIT License. See `LICENSE` for more information.
+
+## 🙏 Acknowledgments
+
+- **Google Gemini** - Free AI API
+- **Streamlit** - Web app framework
+- **Spotify** - Music dataset
+- **Plotly** - Interactive visualizations
+- **Langchain** - AI orchestration
+
+## 📞 Contact
+
+- **Author:** Huda Rasyad Wicaksono
+- **Project:** [Celerates_Moodify](https://github.com/masuden0000/Celerates_Moodify)
+- **Streamlit App:** [Deploy Link Here]
+
+---
+
+**⭐ Star this repo if you find it helpful!**

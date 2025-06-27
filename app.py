@@ -1,9 +1,9 @@
-from datetime import datetime
-
-import streamlit as st
-import pandas as pd
 import os
 import subprocess
+from datetime import datetime
+
+import pandas as pd
+import streamlit as st
 
 from src.core.ai_agent import setup_ai_agent
 from src.core.utils import get_ai_response, initialize_session_state, process_user_input

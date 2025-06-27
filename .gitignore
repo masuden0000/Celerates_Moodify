@@ -2,6 +2,15 @@
 .streamlit/secrets.toml
 *.streamlit
 
+# Virtual Environments
+venv/
+venv311/
+env/
+ENV/
+.venv/
+.env
+*.venv
+
 # Data files (large files handled by Git LFS)
 # spotify_data.csv - now handled by Git LFS
 # *.csv - now handled by Git LFS

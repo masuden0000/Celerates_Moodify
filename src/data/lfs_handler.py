@@ -1,8 +1,10 @@
-import streamlit as st
-import pandas as pd
 import os
-import requests
 from io import StringIO
+
+import pandas as pd
+import requests
+import streamlit as st
+
 
 def download_from_github_lfs(repo_owner, repo_name, file_path):
     """Download LFS file directly from GitHub"""
