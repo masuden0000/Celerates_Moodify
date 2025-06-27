@@ -1,10 +1,10 @@
 # 🎵 Moodify AI - Music Recommendation System
 
-Aplikasi rekomendasi musik berbasis AI yang menggunakan **Google Gemini** untuk analisis mood dan memberikan rekomendasi musik yang dipersonalisasi melalui interface ChatGPT-style.
+Aplikasi rekomendasi musik berbasis AI yang menggunakan **Cohere LLM** untuk analisis mood dan memberikan rekomendasi musik yang dipersonalisasi melalui interface ChatGPT-style.
 
 ## ✨ Key Features
 
-- **🤖 Google Gemini AI** - Powered by Google's Gemini AI (gratis!)
+- **🤖 Cohere AI** - Powered by Cohere's advanced language model
 - **🗣️ ChatGPT-style Interface** - Natural conversation dengan AI agent
 - **📝 Chat History Management** - Multiple chat sessions dengan auto-title generation
 - **🎵 Smart Music Recommendations** - Berdasarkan mood dan preferensi pengguna
@@ -13,6 +13,7 @@ Aplikasi rekomendasi musik berbasis AI yang menggunakan **Google Gemini** untuk 
 - **💾 Export Functionality** - Export chat history ke JSON
 - **🔄 Real-time Sync** - Auto-sync chat sessions dan messages
 - **📊 Data Visualization** - Interactive charts dengan Plotly
+- **🔍 Web Search** - Real-time music info via Google Search
 
 ## � Quick Start
 
@@ -20,7 +21,7 @@ Aplikasi rekomendasi musik berbasis AI yang menggunakan **Google Gemini** untuk 
 
 - Python 3.11 (recommended) atau 3.12
 - Git dengan Git LFS support
-- Google AI Studio API Key (gratis!)
+- Cohere API Key (dari cohere.ai)
 
 ### Installation
 
@@ -46,13 +47,13 @@ Aplikasi rekomendasi musik berbasis AI yang menggunakan **Google Gemini** untuk 
    pip install -r requirements.txt
    ```
 
-4. **Setup Google Gemini API:**
-   - Kunjungi [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Buat API key gratis
+4. **Setup Cohere API:**
+   - Kunjungi [Cohere Dashboard](https://cohere.ai/)
+   - Buat account dan generate API key
    - Buat file `.streamlit/secrets.toml`:
    ```toml
-   [google]
-   api_key = "your_google_gemini_api_key_here"
+   [cohere]
+   api_key = "your_cohere_api_key_here"
    ```
 
 5. **Download data (Git LFS):**
