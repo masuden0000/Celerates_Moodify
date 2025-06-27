@@ -1,10 +1,10 @@
 # Streamlit
-.streamlit/
+.streamlit/secrets.toml
 *.streamlit
 
-# Data files
-spotify_data.csv
-*.csv
+# Data files (large files handled by Git LFS)
+# spotify_data.csv - now handled by Git LFS
+# *.csv - now handled by Git LFS
 
 # Python
 __pycache__/
