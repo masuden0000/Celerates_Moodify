@@ -315,6 +315,14 @@ def load_custom_css():
         background: white !important;
     }
     
+    st-emotion-cache-1f3w014 {
+        font-color: #ffffff !important;
+    }
+
+    .st-cl {
+        color: #ffffff !important;
+    }
+
     .stChatInput input {
         font-size: 0.9rem !important;
         padding: 0.75rem 1rem !important;
