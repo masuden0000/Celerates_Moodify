@@ -1,11 +1,8 @@
-import os
-import subprocess
 from datetime import datetime
 
-import pandas as pd
 import streamlit as st
 
-from src.core.ai_agent import setup_ai_agent
+from src.core.ai_agent import setup_ai_agent, update_agent_memory_with_streamlit_history
 from src.core.utils import get_ai_response, initialize_session_state, process_user_input
 from src.data.data_manager import load_music_data
 from src.ui.sidebar import (
@@ -18,7 +15,7 @@ from src.ui.sidebar import (
 
 # Import all modules
 from src.ui.styles import load_custom_css
-from src.ui.ui_components import render_statistics
+from src.ui.ui_components import render_main_data_analysis, render_statistics
 
 # =============================================================================
 # MAIN APPLICATION
@@ -32,47 +29,6 @@ st.set_page_config(
 )
 
 
-@st.cache_data
-def load_spotify_data():
-    """Load spotify data with LFS support"""
-
-    file_path = "spotify_data.csv"
-
-    # Check if file exists
-    if not os.path.exists(file_path):
-        st.error("spotify_data.csv not found!")
-        return None
-
-    # Check if file is LFS pointer (small file)
-    file_size = os.path.getsize(file_path)
-
-    if file_size < 1000:  # LFS pointer files are very small
-        st.info("📥 Downloading large file via Git LFS...")
-        try:
-            # Pull LFS files
-            result = subprocess.run(
-                ["git", "lfs", "pull"], capture_output=True, text=True, cwd="."
-            )
-            if result.returncode != 0:
-                st.error(f"Git LFS pull failed: {result.stderr}")
-                return None
-            else:
-                st.success("✅ Git LFS pull completed successfully!")
-        except Exception as e:
-            st.error(f"Error pulling LFS files: {str(e)}")
-            return None
-
-    try:
-        # Load the CSV file
-        df = pd.read_csv(file_path)
-        file_size_mb = file_size / (1024 * 1024)
-        st.success(f"✅ Data loaded successfully! Shape: {df.shape} | Size: {file_size_mb:.1f} MB")
-        return df
-    except Exception as e:
-        st.error(f"❌ Error loading CSV: {str(e)}")
-        return None
-
-
 def main():
     """Main application function with minimalist design"""
 
@@ -81,6 +37,8 @@ def main():
 
     # Handle sidebar actions
     handle_sidebar_actions()
+
+
 
     # Handle export download
     if "export_data" in st.session_state:
@@ -122,6 +80,8 @@ def main():
     if st.session_state.agent is None:
         with st.spinner("Setting up AI assistant..."):
             st.session_state.agent = setup_ai_agent(st.session_state.df)
+            update_agent_memory_with_streamlit_history(st.session_state.agent)
+
 
     df = st.session_state.df
     agent = st.session_state.agent
@@ -149,5 +109,8 @@ def main():
     render_statistics(df)
 
 
+
 if __name__ == "__main__":
     main()
+if 'df' in st.session_state and st.session_state.df is not None:
+        render_main_data_analysis(st.session_state.df)

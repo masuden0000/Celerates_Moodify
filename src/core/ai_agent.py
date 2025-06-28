@@ -337,6 +337,8 @@ def setup_ai_agent(df: pd.DataFrame):
         ]
 
         memory = ConversationBufferMemory()
+        memory_key="chat_history",
+        return_messages=False
 
         # Custom prompt template dengan format yang lebih eksplisit
         custom_prompt_text = """Answer the following questions as best you can. You have access to the following tools:
@@ -452,7 +454,10 @@ def run_agent_with_debug(agent, user_input: str, enable_debug: bool = True):
         log_system("Memulai pemrosesan dengan AI Agent")
 
         # Run the agent executor
-        result = agent.invoke({"input": user_input})
+        result = agent.invoke({
+         "input": user_input,
+         "chat_history": st.session_state.get("chat_history", "")
+        })
 
         # Extract response from result
         response = (
@@ -473,6 +478,17 @@ def run_agent_with_debug(agent, user_input: str, enable_debug: bool = True):
         log_error(e, "Error during agent execution")
         return f"❌ Terjadi error: {str(e)}"
 
+def update_agent_memory_with_streamlit_history(agent):
+    if not agent or not hasattr(agent, 'memory'):
+        return
+    messages = st.session_state.get("messages", [])
+    history = ""
+    for msg in messages:
+        role = msg.get("role", "")
+        content = msg.get("content", "")
+        history += f"{role}: {content}\\n"
+    agent.memory.chat_memory.clear()
+    agent.memory.chat_memory.add_user_message(history)
 
 def toggle_debug_mode():
     """Toggle debug mode on/off"""
