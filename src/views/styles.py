@@ -316,7 +316,7 @@ def load_custom_css():
     }
 
     .st-emotion-cache-x1bvup .e1togvvn1 .st-d1 {
-        background-color: white;
+        background-color: white !important;
     }
 
     .stChatInput input {
