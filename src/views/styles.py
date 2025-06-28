@@ -314,13 +314,9 @@ def load_custom_css():
         border: 1px solid #e0e0e0 !important;
         background: white !important;
     }
-    
-    st-emotion-cache-1f3w014 {
-        font-color: #ffffff !important;
-    }
 
-    .st-cl {
-        color: #ffffff !important;
+    .st-emotion-cache-x1bvup .st-bb {
+        background: white !important;
     }
 
     .stChatInput input {
