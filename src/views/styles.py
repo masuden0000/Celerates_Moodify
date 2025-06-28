@@ -21,11 +21,27 @@ def load_custom_css():
         padding: 0;
         box-sizing: border-box;
     }
-    
-    /* Main App Background */
+      /* Main App Background */
     .stApp {
-        background: #fafafa;
-        color: #1a1a1a;
+        background: #fafafa !important;
+        color: #1a1a1a !important;
+    }
+    
+    /* Main content area */
+    .stMain, .main, [data-testid="stMain"] {
+        background: #fafafa !important;
+        color: #1a1a1a !important;
+    }
+    
+    /* Override dark theme if applied */
+    .stApp[data-theme="dark"] {
+        background: #fafafa !important;
+        color: #1a1a1a !important;
+    }
+    
+    .stMain[data-theme="dark"], .main[data-theme="dark"], [data-testid="stMain"][data-theme="dark"] {
+        background: #fafafa !important;
+        color: #1a1a1a !important;
     }
     
     /* Header */
@@ -113,40 +129,112 @@ def load_custom_css():
         color: #666;
         border: 1px solid #e0e0e0;
     }
-    
-    /* Statistics */
+      /* Statistics */
     .stats-container {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        padding: 2rem;
-        margin: 2rem 0;
+        background: white !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 12px !important;
+        padding: 2rem !important;
+        margin: 2rem 0 !important;
     }
     
     .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 2rem;
-        text-align: center;
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+        gap: 2rem !important;
+        text-align: center !important;
     }
     
     .stat-item {
-        padding: 0;
+        padding: 0 !important;
     }
     
     .stat-value {
-        font-size: 2rem;
-        font-weight: 300;
-        color: #1a1a1a;
-        display: block;
+        font-size: 2rem !important;
+        font-weight: 300 !important;
+        color: #1a1a1a !important;
+        display: block !important;
+        text-shadow: none !important;
     }
     
     .stat-label {
-        font-size: 0.8rem;
-        color: #666;
-        margin-top: 0.25rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        font-size: 0.8rem !important;
+        color: #666 !important;
+        margin-top: 0.25rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        text-shadow: none !important;
+    }
+      /* Force dark text on statistics regardless of theme */
+    [data-testid="stMarkdownContainer"] .stats-container .stat-value,
+    .stMarkdown .stats-container .stat-value {
+        color: #1a1a1a !important;
+    }
+    
+    [data-testid="stMarkdownContainer"] .stats-container .stat-label,
+    .stMarkdown .stats-container .stat-label {
+        color: #666 !important;
+    }
+    
+    /* Streamlit Metrics Styling - Force dark text */
+    [data-testid="metric-container"] {
+        background: white !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+    }
+    
+    [data-testid="metric-container"] [data-testid="stMetricValue"] {
+        color: #1a1a1a !important;
+        font-weight: 600 !important;
+        text-shadow: none !important;
+    }
+    
+    [data-testid="metric-container"] [data-testid="stMetricLabel"] {
+        color: #666 !important;
+        font-weight: 500 !important;
+        text-shadow: none !important;
+    }
+      [data-testid="metric-container"] [data-testid="stMetricDelta"] {
+        color: #28a745 !important;
+        font-weight: 400 !important;
+        text-shadow: none !important;
+    }
+    
+    /* Universal text color override for main content */
+    .stMain *, .main *, [data-testid="stMain"] * {
+        color: inherit !important;
+    }
+    
+    .stMain h1, .stMain h2, .stMain h3, .stMain h4, .stMain h5, .stMain h6,
+    .main h1, .main h2, .main h3, .main h4, .main h5, .main h6,
+    [data-testid="stMain"] h1, [data-testid="stMain"] h2, [data-testid="stMain"] h3, 
+    [data-testid="stMain"] h4, [data-testid="stMain"] h5, [data-testid="stMain"] h6 {
+        color: #1a1a1a !important;
+    }
+    
+    .stMain p, .stMain div, .stMain span,
+    .main p, .main div, .main span,    [data-testid="stMain"] p, [data-testid="stMain"] div, [data-testid="stMain"] span {
+        color: #1a1a1a !important;
+    }
+    
+    /* Additional browser compatibility fixes */
+    .stMain .stMarkdown, .main .stMarkdown, [data-testid="stMain"] .stMarkdown {
+        color: #1a1a1a !important;
+    }
+    
+    .stMain .stText, .main .stText, [data-testid="stMain"] .stText {
+        color: #1a1a1a !important;
+    }
+    
+    /* Fix for Plotly charts text color */
+    .stMain .js-plotly-plot, .main .js-plotly-plot, [data-testid="stMain"] .js-plotly-plot {
+        background: white !important;
+    }
+    
+    /* Ensure white background for all content containers */
+    .stMain .element-container, .main .element-container, [data-testid="stMain"] .element-container {
+        background: transparent !important;
     }
     
     /* Chat Input Styling */
