@@ -57,7 +57,7 @@ def inject_sidebar_css():
     /* Chat title styling */
     .chat-title {
         font-size: 0.9rem;
-        color: #2c3e50;
+        color: #000000;
         font-weight: 600;
         margin-bottom: 2px;
     }

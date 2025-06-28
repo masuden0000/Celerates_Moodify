@@ -128,8 +128,7 @@ def load_custom_css():
         border-radius: 20px;
         color: #666;
         border: 1px solid #e0e0e0;
-    }
-      /* Statistics */
+    }      /* Statistics */
     .stats-container {
         background: white !important;
         border: 1px solid #e0e0e0 !important;
@@ -152,56 +151,109 @@ def load_custom_css():
     .stat-value {
         font-size: 2rem !important;
         font-weight: 300 !important;
-        color: #1a1a1a !important;
+        color: #000000 !important;
         display: block !important;
         text-shadow: none !important;
+        -webkit-text-fill-color: #000000 !important;
+        -moz-text-fill-color: #000000 !important;
     }
     
     .stat-label {
         font-size: 0.8rem !important;
-        color: #666 !important;
+        color: #333333 !important;
         margin-top: 0.25rem !important;
         text-transform: uppercase !important;
         letter-spacing: 0.5px !important;
         text-shadow: none !important;
+        -webkit-text-fill-color: #333333 !important;
+        -moz-text-fill-color: #333333 !important;
     }
-      /* Force dark text on statistics regardless of theme */
+    
+    /* Force dark text on statistics regardless of theme - Enhanced */
     [data-testid="stMarkdownContainer"] .stats-container .stat-value,
-    .stMarkdown .stats-container .stat-value {
-        color: #1a1a1a !important;
+    .stMarkdown .stats-container .stat-value,
+    .stats-container .stat-value,
+    div[class*="stats-container"] .stat-value,
+    .stApp .stats-container .stat-value {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        -moz-text-fill-color: #000000 !important;
+        text-shadow: none !important;
     }
     
     [data-testid="stMarkdownContainer"] .stats-container .stat-label,
-    .stMarkdown .stats-container .stat-label {
-        color: #666 !important;
+    .stMarkdown .stats-container .stat-label,
+    .stats-container .stat-label,
+    div[class*="stats-container"] .stat-label,
+    .stApp .stats-container .stat-label {
+        color: #333333 !important;
+        -webkit-text-fill-color: #333333 !important;
+        -moz-text-fill-color: #333333 !important;
+        text-shadow: none !important;
     }
     
-    /* Streamlit Metrics Styling - Force dark text */
-    [data-testid="metric-container"] {
+    /* Streamlit Metrics Styling - Force dark text with enhanced specificity */
+    [data-testid="metric-container"],
+    div[data-testid="metric-container"],
+    .stMetric {
         background: white !important;
         border: 1px solid #e0e0e0 !important;
         border-radius: 8px !important;
         padding: 1rem !important;
     }
     
-    [data-testid="metric-container"] [data-testid="stMetricValue"] {
-        color: #1a1a1a !important;
+    [data-testid="metric-container"] [data-testid="stMetricValue"],
+    div[data-testid="metric-container"] [data-testid="stMetricValue"],
+    [data-testid="stMetricValue"],
+    .stMetric [data-testid="stMetricValue"] {
+        color: #000000 !important;
         font-weight: 600 !important;
         text-shadow: none !important;
+        -webkit-text-fill-color: #000000 !important;
+        -moz-text-fill-color: #000000 !important;
     }
     
-    [data-testid="metric-container"] [data-testid="stMetricLabel"] {
-        color: #666 !important;
+    [data-testid="metric-container"] [data-testid="stMetricLabel"],
+    div[data-testid="metric-container"] [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"],
+    .stMetric [data-testid="stMetricLabel"] {
+        color: #333333 !important;
         font-weight: 500 !important;
         text-shadow: none !important;
+        -webkit-text-fill-color: #333333 !important;
+        -moz-text-fill-color: #333333 !important;
     }
-      [data-testid="metric-container"] [data-testid="stMetricDelta"] {
+    
+    [data-testid="metric-container"] [data-testid="stMetricDelta"],
+    div[data-testid="metric-container"] [data-testid="stMetricDelta"],
+    [data-testid="stMetricDelta"],
+    .stMetric [data-testid="stMetricDelta"] {
         color: #28a745 !important;
         font-weight: 400 !important;
         text-shadow: none !important;
+        -webkit-text-fill-color: #28a745 !important;
+        -moz-text-fill-color: #28a745 !important;
     }
     
-    /* Universal text color override for main content */
+    /* Additional CSS to override any theme-based text color inheritance */
+    .stApp[data-theme="dark"] .stats-container .stat-value,
+    .stApp[data-theme="light"] .stats-container .stat-value,
+    html[data-theme="dark"] .stats-container .stat-value,
+    html[data-theme="light"] .stats-container .stat-value {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        -moz-text-fill-color: #000000 !important;
+    }
+    
+    .stApp[data-theme="dark"] .stats-container .stat-label,
+    .stApp[data-theme="light"] .stats-container .stat-label,
+    html[data-theme="dark"] .stats-container .stat-label,
+    html[data-theme="light"] .stats-container .stat-label {
+        color: #333333 !important;
+        -webkit-text-fill-color: #333333 !important;
+        -moz-text-fill-color: #333333 !important;
+    }
+      /* Universal text color override for main content - Enhanced */
     .stMain *, .main *, [data-testid="stMain"] * {
         color: inherit !important;
     }
@@ -210,21 +262,40 @@ def load_custom_css():
     .main h1, .main h2, .main h3, .main h4, .main h5, .main h6,
     [data-testid="stMain"] h1, [data-testid="stMain"] h2, [data-testid="stMain"] h3, 
     [data-testid="stMain"] h4, [data-testid="stMain"] h5, [data-testid="stMain"] h6 {
-        color: #1a1a1a !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        -moz-text-fill-color: #000000 !important;
     }
     
     .stMain p, .stMain div, .stMain span,
-    .main p, .main div, .main span,    [data-testid="stMain"] p, [data-testid="stMain"] div, [data-testid="stMain"] span {
+    .main p, .main div, .main span,
+    [data-testid="stMain"] p, [data-testid="stMain"] div, [data-testid="stMain"] span {
         color: #1a1a1a !important;
+        -webkit-text-fill-color: #1a1a1a !important;
+        -moz-text-fill-color: #1a1a1a !important;
     }
     
     /* Additional browser compatibility fixes */
     .stMain .stMarkdown, .main .stMarkdown, [data-testid="stMain"] .stMarkdown {
         color: #1a1a1a !important;
+        -webkit-text-fill-color: #1a1a1a !important;
+        -moz-text-fill-color: #1a1a1a !important;
     }
     
     .stMain .stText, .main .stText, [data-testid="stMain"] .stText {
         color: #1a1a1a !important;
+        -webkit-text-fill-color: #1a1a1a !important;
+        -moz-text-fill-color: #1a1a1a !important;
+    }
+    
+    /* Enhanced override for all text elements in info/success/warning/error containers */
+    .stMain .stInfo, .stMain .stSuccess, .stMain .stWarning, .stMain .stError,
+    .main .stInfo, .main .stSuccess, .main .stWarning, .main .stError,
+    [data-testid="stMain"] .stInfo, [data-testid="stMain"] .stSuccess, 
+    [data-testid="stMain"] .stWarning, [data-testid="stMain"] .stError {
+        color: #1a1a1a !important;
+        -webkit-text-fill-color: #1a1a1a !important;
+        -moz-text-fill-color: #1a1a1a !important;
     }
     
     /* Fix for Plotly charts text color */
@@ -440,9 +511,7 @@ def load_custom_css():
     
     .css-17eq0hr::-webkit-scrollbar-thumb:hover {
         background: #5a5a5a;
-    }
-
-    /* Hide Streamlit elements */
+    }    /* Hide Streamlit elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -463,6 +532,73 @@ def load_custom_css():
     
     ::-webkit-scrollbar-thumb:hover {
         background: #a1a1a1;
+    }
+    
+    /* ULTIMATE OVERRIDE: Force black text for all statistics components */
+    /* This targets all possible CSS selectors that could contain statistics */
+    .stats-container *, .stats-container, 
+    div[class*="stats"] *, div[class*="stats"],
+    .stat-value, .stat-label, .stat-item,
+    [class*="stat-"] *, [class*="stat-"],
+    .stApp .stats-container *,
+    html .stats-container *,
+    body .stats-container * {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        -moz-text-fill-color: #000000 !important;
+        text-shadow: none !important;
+    }
+    
+    /* Override for stat labels specifically */
+    .stat-label, [class*="stat-label"], 
+    .stats-container .stat-label,
+    div[class*="stats"] .stat-label {
+        color: #333333 !important;
+        -webkit-text-fill-color: #333333 !important;
+        -moz-text-fill-color: #333333 !important;
+    }
+    
+    /* Browser-specific CSS for text color enforcement */
+    @-webkit-keyframes forceBlackText {
+        0% { color: #000000 !important; -webkit-text-fill-color: #000000 !important; }
+        100% { color: #000000 !important; -webkit-text-fill-color: #000000 !important; }
+    }
+    
+    @-moz-keyframes forceBlackText {
+        0% { color: #000000 !important; -moz-text-fill-color: #000000 !important; }
+        100% { color: #000000 !important; -moz-text-fill-color: #000000 !important; }
+    }
+    
+    .stat-value {
+        -webkit-animation: forceBlackText 0.1s infinite;
+        -moz-animation: forceBlackText 0.1s infinite;
+    }
+    
+    /* Force color for markdown content containing statistics */
+    [data-testid="stMarkdownContainer"] strong,
+    [data-testid="stMarkdownContainer"] span,
+    [data-testid="stMarkdownContainer"] div,
+    .stMarkdown strong,
+    .stMarkdown span,
+    .stMarkdown div {
+        color: inherit !important;
+    }
+    
+    /* Override Streamlit's theme-based text colors for main content */
+    .stApp[data-theme="dark"] [data-testid="stMain"] *,
+    .stApp[data-theme="light"] [data-testid="stMain"] *,
+    html[data-theme="dark"] [data-testid="stMain"] *,
+    html[data-theme="light"] [data-testid="stMain"] * {
+        color: #1a1a1a !important;
+    }
+    
+    .stApp[data-theme="dark"] .stats-container .stat-value,
+    .stApp[data-theme="light"] .stats-container .stat-value,
+    html[data-theme="dark"] .stats-container .stat-value,
+    html[data-theme="light"] .stats-container .stat-value {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        -moz-text-fill-color: #000000 !important;
     }
     </style>
     """,

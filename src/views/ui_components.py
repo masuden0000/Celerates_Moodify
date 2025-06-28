@@ -233,8 +233,7 @@ def render_main_data_analysis(df):
     )
     
     st.plotly_chart(fig_heatmap, use_container_width=True)
-    
-    # Fun stats section
+      # Fun stats section
     st.markdown("---")
     st.subheader("🎯 Fun Statistics")
     
@@ -243,47 +242,47 @@ def render_main_data_analysis(df):
     with col1:
         most_popular_mood = mood_counts.index[0]
         mood_percentage = (mood_counts.iloc[0] / len(df)) * 100
-        st.info(f"🎭 **Most Popular Mood:** {most_popular_mood} ({mood_percentage:.1f}%)")
+        st.markdown(f'<div style="background: #d1ecf1; padding: 1rem; border-radius: 8px; border: 1px solid #bee5eb; margin: 0.5rem 0;"><strong style="color: #000000 !important;">🎭 Most Popular Mood:</strong> <span style="color: #000000 !important;">{most_popular_mood} ({mood_percentage:.1f}%)</span></div>', unsafe_allow_html=True)
         
         most_popular_genre = genre_counts.index[0]
         genre_percentage = (genre_counts.iloc[0] / len(df)) * 100
-        st.success(f"🎵 **Most Popular Genre:** {most_popular_genre} ({genre_percentage:.1f}%)")
+        st.markdown(f'<div style="background: #d4edda; padding: 1rem; border-radius: 8px; border: 1px solid #c3e6cb; margin: 0.5rem 0;"><strong style="color: #000000 !important;">🎵 Most Popular Genre:</strong> <span style="color: #000000 !important;">{most_popular_genre} ({genre_percentage:.1f}%)</span></div>', unsafe_allow_html=True)
     
     with col2:
         # Calculate some interesting stats
         unique_combinations = df.groupby(['mood', 'genre']).size().shape[0]
-        st.warning(f"🎨 **Unique Mood-Genre Combinations:** {unique_combinations}")
+        st.markdown(f'<div style="background: #fff3cd; padding: 1rem; border-radius: 8px; border: 1px solid #ffeaa7; margin: 0.5rem 0;"><strong style="color: #000000 !important;">🎨 Unique Mood-Genre Combinations:</strong> <span style="color: #000000 !important;">{unique_combinations}</span></div>', unsafe_allow_html=True)
         
         avg_songs_per_artist = len(df) / df['artist_name'].nunique()
-        st.error(f"🎤 **Average Songs per Artist:** {avg_songs_per_artist:.1f}")
+        st.markdown(f'<div style="background: #f8d7da; padding: 1rem; border-radius: 8px; border: 1px solid #f5c6cb; margin: 0.5rem 0;"><strong style="color: #000000 !important;">🎤 Average Songs per Artist:</strong> <span style="color: #000000 !important;">{avg_songs_per_artist:.1f}</span></div>', unsafe_allow_html=True)
 
 # MINIMALIST UI COMPONENTS
 
 def render_statistics(df: pd.DataFrame):
-    """Render minimalist app statistics"""
+    """Render minimalist app statistics with forced black text"""
     analytics = st.session_state.get(
         "analytics", {"total_queries": 0, "recommendations_given": 0}
     )
 
     st.markdown(
         f"""
-    <div class="stats-container">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-value">{len(df):,}</span>
-                <div class="stat-label">Songs</div>
+    <div class="stats-container" style="background: white !important; border: 1px solid #e0e0e0 !important; border-radius: 12px !important; padding: 2rem !important; margin: 2rem 0 !important;">
+        <div class="stats-grid" style="display: grid !important; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important; gap: 2rem !important; text-align: center !important;">
+            <div class="stat-item" style="padding: 0 !important;">
+                <span class="stat-value" style="font-size: 2rem !important; font-weight: 300 !important; color: #000000 !important; display: block !important; text-shadow: none !important; -webkit-text-fill-color: #000000 !important; -moz-text-fill-color: #000000 !important;">{len(df):,}</span>
+                <div class="stat-label" style="font-size: 0.8rem !important; color: #333333 !important; margin-top: 0.25rem !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; text-shadow: none !important; -webkit-text-fill-color: #333333 !important; -moz-text-fill-color: #333333 !important;">Songs</div>
             </div>
-            <div class="stat-item">
-                <span class="stat-value">{df['artist_name'].nunique():,}</span>
-                <div class="stat-label">Artists</div>
+            <div class="stat-item" style="padding: 0 !important;">
+                <span class="stat-value" style="font-size: 2rem !important; font-weight: 300 !important; color: #000000 !important; display: block !important; text-shadow: none !important; -webkit-text-fill-color: #000000 !important; -moz-text-fill-color: #000000 !important;">{df['artist_name'].nunique():,}</span>
+                <div class="stat-label" style="font-size: 0.8rem !important; color: #333333 !important; margin-top: 0.25rem !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; text-shadow: none !important; -webkit-text-fill-color: #333333 !important; -moz-text-fill-color: #333333 !important;">Artists</div>
             </div>
-            <div class="stat-item">
-                <span class="stat-value">{df['genre'].nunique():,}</span>
-                <div class="stat-label">Genres</div>
+            <div class="stat-item" style="padding: 0 !important;">
+                <span class="stat-value" style="font-size: 2rem !important; font-weight: 300 !important; color: #000000 !important; display: block !important; text-shadow: none !important; -webkit-text-fill-color: #000000 !important; -moz-text-fill-color: #000000 !important;">{df['genre'].nunique():,}</span>
+                <div class="stat-label" style="font-size: 0.8rem !important; color: #333333 !important; margin-top: 0.25rem !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; text-shadow: none !important; -webkit-text-fill-color: #333333 !important; -moz-text-fill-color: #333333 !important;">Genres</div>
             </div>
-            <div class="stat-item">
-                <span class="stat-value">{analytics['total_queries']:,}</span>
-                <div class="stat-label">Queries</div>
+            <div class="stat-item" style="padding: 0 !important;">
+                <span class="stat-value" style="font-size: 2rem !important; font-weight: 300 !important; color: #000000 !important; display: block !important; text-shadow: none !important; -webkit-text-fill-color: #000000 !important; -moz-text-fill-color: #000000 !important;">{analytics['total_queries']:,}</span>
+                <div class="stat-label" style="font-size: 0.8rem !important; color: #333333 !important; margin-top: 0.25rem !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; text-shadow: none !important; -webkit-text-fill-color: #333333 !important; -moz-text-fill-color: #333333 !important;">Queries</div>
             </div>
         </div>
     </div>
