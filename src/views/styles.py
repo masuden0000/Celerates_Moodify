@@ -327,6 +327,10 @@ def load_custom_css():
         -moz-text-fill-color: #ffffff !important;
     }
     
+    .user-message {
+        background-color: #bdc7ff; 
+    }
+    
     /* Additional chat input text color enforcement */
     .stChatInput input::placeholder {
         color: #ffffff !important;
