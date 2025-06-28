@@ -7,6 +7,7 @@ import streamlit as st
 
 # MINIMALIST STYLING
 
+
 def load_custom_css():
     """Load minimal, clean CSS styling"""
     st.markdown(
@@ -307,8 +308,7 @@ def load_custom_css():
     .stMain .element-container, .main .element-container, [data-testid="stMain"] .element-container {
         background: transparent !important;
     }
-    
-    /* Chat Input Styling */
+      /* Chat Input Styling */
     .stChatInput > div > div > div > div {
         border-radius: 25px !important;
         border: 1px solid #e0e0e0 !important;
@@ -318,6 +318,29 @@ def load_custom_css():
     .stChatInput input {
         font-size: 0.9rem !important;
         padding: 0.75rem 1rem !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        -moz-text-fill-color: #ffffff !important;
+    }
+    
+    /* Additional chat input text color enforcement */
+    .stChatInput input::placeholder {
+        color: #ffffff !important;
+        opacity: 0.7 !important;
+        -webkit-text-fill-color: #ffffff !important;
+        -moz-text-fill-color: #ffffff !important;
+    }
+    
+    /* Force white text in chat input across all browsers and themes */
+    [data-testid="stChatInput"] input,
+    [data-testid="stChatInput"] input:focus,
+    [data-testid="stChatInput"] input:active,
+    .stChatInput input:focus,
+    .stChatInput input:active {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        -moz-text-fill-color: #ffffff !important;
+        text-shadow: none !important;
     }
     
     /* Button Styling */
