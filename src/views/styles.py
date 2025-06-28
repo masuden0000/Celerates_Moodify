@@ -315,7 +315,7 @@ def load_custom_css():
         background: white !important;
     }
 
-    .st-emotion-cache-x1bvup .e1togvvn1 .st-d1 {
+    .st-emotion-cache-x1bvup > .st-c8 > .st-d1 {
         background-color: white !important;
     }
 
