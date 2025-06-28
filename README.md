@@ -1,27 +1,70 @@
 # 🎵 Moodify AI - Music Recommendation System
 
-Aplikasi rekomendasi musik berbasis AI yang menggunakan **Cohere LLM** untuk analisis mood dan memberikan rekomendasi musik yang dipersonalisasi melalui interface ChatGPT-style.
+Aplikasi rekomendasi musik berbasis AI yang menggunakan **Cohere LLM** dan **Gemini AI** untuk analisis mood dan memberikan rekomendasi musik yang dipersonalisasi melalui interface ChatGPT-style dengan arsitektur **MVC (Model-View-Controller)**.
 
 ## ✨ Key Features
 
-- **🤖 Cohere AI** - Powered by Cohere's advanced language model
-- **🗣️ ChatGPT-style Interface** - Natural conversation dengan AI agent
-- **📝 Chat History Management** - Multiple chat sessions dengan auto-title generation
-- **🎵 Smart Music Recommendations** - Berdasarkan mood dan preferensi pengguna
-- **🧠 Advanced Analysis** - Music feature analysis dengan ML
-- **📱 Responsive Design** - Modern UI dengan dark sidebar theme
-- **💾 Export Functionality** - Export chat history ke JSON
-- **🔄 Real-time Sync** - Auto-sync chat sessions dan messages
-- **📊 Data Visualization** - Interactive charts dengan Plotly
-- **🔍 Web Search** - Real-time music info via Google Search
+### 🤖 **Dual AI Power**
+- **Cohere AI** - Advanced language model untuk conversation
+- **Gemini 2.0 Flash** - Typo correction dan lyrics search
 
-## � Quick Start
+### 🎵 **Smart Music Features**
+- **ChatGPT-style Interface** - Natural conversation dengan AI agent
+- **Smart Music Recommendations** - Berdasarkan mood dan preferensi
+- **Lyrics Search** - AI-powered dengan auto typo correction
+- **Music Feature Analysis** - Advanced ML-based analysis
+
+### 💻 **Modern Architecture**
+- **MVC Pattern** - Clean separation of concerns
+- **Modular Design** - Easy maintenance dan scalability
+- **Type Safety** - Full Python type annotations
+- **Error Handling** - Graceful error management
+
+### 📱 **User Experience**
+- **Chat History Management** - Multiple sessions dengan auto-title
+- **Responsive Design** - Modern UI dengan dark sidebar theme
+- **Export Functionality** - Export chat history ke JSON
+- **Real-time Sync** - Auto-sync chat sessions dan messages
+- **Interactive Charts** - Data visualization dengan Plotly
+
+## 🏗️ **Architecture Overview**
+
+```
+📁 Moodify AI (MVC Architecture)
+├── 🎯 app.py                 # Main application entry point
+├── 📊 spotify_data.csv       # Music dataset (Git LFS)
+├── ⚙️  requirements.txt       # Dependencies
+├── 📋 README.md              # Documentation
+└── 📁 src/                   # Source code (MVC)
+    ├── 🎛️  controllers/       # Business Logic & Flow Control
+    │   ├── ai_agent.py       # AI agent setup & management
+    │   ├── utils.py          # Core utilities & session handling
+    │   └── response_cleaner.py # Response processing & cleaning
+    ├── 📊 models/            # Data Models & Business Logic  
+    │   ├── data_manager.py   # Dataset loading & management
+    │   ├── music_analyzer.py # Music analysis & recommendations
+    │   └── lfs_handler.py    # Git LFS file handling
+    ├── 🎨 views/             # UI Components & Presentation
+    │   ├── sidebar.py        # Chat history & navigation
+    │   ├── ui_components.py  # Charts & data visualization
+    │   └── styles.py         # CSS & styling
+    ├── 🔧 services/          # External Services & Utilities
+    │   ├── lyrics_service.py # Gemini-powered lyrics search  
+    │   ├── debug_logger.py   # Logging & debugging
+    │   ├── agent_callback.py # AI agent callbacks
+    │   └── tool_debugger.py  # Development tools
+    └── ⚙️  config/            # Configuration & Constants
+        └── app_config.py     # Application configuration
+```
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - Python 3.11 (recommended) atau 3.12
 - Git dengan Git LFS support
-- Cohere API Key (dari cohere.ai)
+- **Cohere API Key** (dari [cohere.ai](https://cohere.ai/))
+- **Gemini API Key** (dari [Google AI Studio](https://makersuite.google.com/app/apikey))
 
 ### Installation
 
@@ -47,14 +90,50 @@ Aplikasi rekomendasi musik berbasis AI yang menggunakan **Cohere LLM** untuk ana
    pip install -r requirements.txt
    ```
 
-4. **Setup Cohere API:**
-   - Kunjungi [Cohere Dashboard](https://cohere.ai/)
-   - Buat account dan generate API key
-   - Buat file `.streamlit/secrets.toml`:
+4. **Setup API Keys:**
+   
+   **Option A: Streamlit Secrets (Recommended)**
+   
+   Buat file `.streamlit/secrets.toml`:
    ```toml
-   [cohere]
-   api_key = "your_cohere_api_key_here"
+   # Cohere untuk AI conversations
+   COHERE_API_KEY = "your_cohere_api_key_here"
+   
+   # Gemini untuk lyrics search dan typo correction  
+   GEMINI_API_KEY = "your_gemini_api_key_here"
    ```
+   
+   **Option B: Environment Variables**
+   
+   Buat file `.env`:
+   ```bash
+   COHERE_API_KEY=your_cohere_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+5. **Run the application:**
+   
+   **Easy Way (Recommended):**
+   ```bash
+   # Windows
+   run_app.bat
+   
+   # Linux/Mac
+   ./run_app.sh
+   ```
+   
+   **Manual Way:**
+   ```bash
+   # Activate virtual environment first
+   # Windows: venv311\Scripts\activate
+   # Linux/Mac: source venv311/bin/activate
+   
+   streamlit run app.py
+   ```
+
+6. **Access the app:**
+   - Open browser ke `http://localhost:8501`
+   - Mulai chat dengan AI music assistant!
 
 5. **Download data (Git LFS):**
    ```bash

@@ -1,12 +1,22 @@
+"""
+AI Agent Controller - Main business logic for Moodify AI
+Handles agent setup, mood validation, and AI conversation management
+"""
+
 import os
 import time
 
 import pandas as pd
 import streamlit as st
 
-from src.core.agent_callback import create_debug_callback
-from src.core.config import LLM_AVAILABLE
-from src.core.debug_logger import (
+from src.config.app_config import LLM_AVAILABLE
+from src.models.music_analyzer import (
+    analyze_mood_features,
+    get_enhanced_recommendations,
+    search_music_info,
+)
+from src.services.agent_callback import create_debug_callback
+from src.services.debug_logger import (
     debug_logger,
     disable_debug_mode,
     enable_debug_mode,
@@ -16,35 +26,14 @@ from src.core.debug_logger import (
     log_system,
     log_user_input,
 )
-from src.core.music_analyzer import (
-    analyze_mood_features,
-    get_enhanced_recommendations,
-    search_music_info,
-)
-from src.core.tool_debugger import debug_tool
-
-# =============================================================================
-# MOOD VALIDATION & MAPPING
-# =============================================================================
+from src.services.tool_debugger import debug_tool
 
 
 def validate_and_map_mood(mood_input: str) -> str:
-    """
-    Memvalidasi dan memetakan input mood ke salah satu mood yang valid
-
-    Args:
-        mood_input: Input mood dari user atau agent
-
-    Returns:
-        str: Mood yang valid (happy, sad, energy, calm, romantic, neutral)
-    """
-    # Valid moods yang dapat diterima
+    """Validate and map input mood to valid mood categories"""
     VALID_MOODS = {"happy", "sad", "energy", "calm", "romantic", "neutral"}
-
-    # Clean input
     mood_clean = mood_input.lower().strip()
 
-    # Direct match
     if mood_clean in VALID_MOODS:
         return mood_clean
 
@@ -62,11 +51,9 @@ def validate_and_map_mood(mood_input: str) -> str:
             )
             return valid_mood
 
-    # Mapping table untuk aktivitas dan situasi ke mood yang tepat
     MOOD_MAPPING = {
-        # Happy triggers
         "makan": "happy",
-        "makano": "happy",  # typo fix for makanO
+        "makano": "happy",
         "lapar": "happy",
         "weekend": "happy",
         "libur": "happy",
@@ -74,7 +61,6 @@ def validate_and_map_mood(mood_input: str) -> str:
         "gembira": "happy",
         "suka": "happy",
         "bahagia": "happy",
-        # Energy triggers
         "olahraga": "energy",
         "gym": "energy",
         "workout": "energy",
@@ -83,7 +69,6 @@ def validate_and_map_mood(mood_input: str) -> str:
         "bangun": "energy",
         "jogging": "energy",
         "run": "energy",
-        # Calm triggers
         "jalan": "calm",
         "macet": "calm",
         "kerja": "calm",
@@ -94,11 +79,10 @@ def validate_and_map_mood(mood_input: str) -> str:
         "tenang": "calm",
         "duduk": "calm",
         "istirahat": "calm",
-        # Sad triggers - EXPANDED for analysis inputs
         "sedih": "sad",
-        "sediho": "sad",  # typo fix for sedihO
+        "sediho": "sad",
         "musik sedih": "sad",
-        "musik sediho": "sad",  # typo fix
+        "musik sediho": "sad",
         "galau": "sad",
         "hujan": "sad",
         "patah hati": "sad",
@@ -107,14 +91,12 @@ def validate_and_map_mood(mood_input: str) -> str:
         "lelah": "sad",
         "cape": "sad",
         "bengong": "sad",
-        # Romantic triggers
         "pacar": "romantic",
         "kangen": "romantic",
         "cinta": "romantic",
         "rindu": "romantic",
         "sayang": "romantic",
         "valentine": "romantic",
-        # Neutral triggers
         "rekomendasi": "neutral",
         "saran": "neutral",
         "musik": "neutral",
@@ -122,7 +104,6 @@ def validate_and_map_mood(mood_input: str) -> str:
         "playlist": "neutral",
     }
 
-    # Check mapping table
     for keyword, mapped_mood in MOOD_MAPPING.items():
         if keyword in mood_clean:
             log_system(
@@ -130,14 +111,8 @@ def validate_and_map_mood(mood_input: str) -> str:
             )
             return mapped_mood
 
-    # If no mapping found, default to neutral
     log_system(f"🎯 Mood defaulting to neutral: '{mood_input}' -> 'neutral'")
     return "neutral"
-
-
-# =============================================================================
-# AI AGENT SETUP
-# =============================================================================
 
 
 def setup_ai_agent(df: pd.DataFrame):
@@ -145,7 +120,6 @@ def setup_ai_agent(df: pd.DataFrame):
     if not LLM_AVAILABLE:
         return None
 
-    # Get API key with proper fallback
     cohere_api_key = None
     try:
         cohere_api_key = st.secrets.get("COHERE_API_KEY")
@@ -169,9 +143,10 @@ def setup_ai_agent(df: pd.DataFrame):
         # Definisikan system prompt
         system_prompt = """
         **Persona Utama:**
-        Kamu adalah Moodify, AI music assistant yang paling ngertiin selera musik Gen Z. Kamu itu asek, santai, dan passion-nya soal musik gak ada abisnya. Anggep aja kamu itu temen yang selalu punya playlist pas buat segala situasi.
+        Kamu adalah Moodify AI, asisten musik yang paling ngertiin selera musik Gen Z. Kamu itu asek, santai, dan passion-nya soal musik gak ada abisnya. Anggep aja kamu itu temen yang selalu punya playlist pas buat segala situasi.
         
-        - **Nama:** Moodify
+        - **Nama:** Moodify AI (atau panggil aja Moodify)
+        - **Identitas:** Gw adalah Moodify AI, asisten musikmu yang siap bantu lo nemuin lagu yang pas buat mood lo!
         - **Gaya Bahasa:** Bahasa yang digunakan bahasa indonesia. Pake bahasa gaul Jakarta (gw, lo, anjir, gokil, vibe, dll). Santai, to the point, dan gak kaku.
         - **Karakter:**
             - **Music Nerd:** Tau banget soal musik, dari yang lagi trending sampe hidden gems.
@@ -179,13 +154,35 @@ def setup_ai_agent(df: pd.DataFrame):
             - **Proaktif & Interaktif:** Suka nanya balik buat mastiin rekomendasinya pas.
             - **Humoris:** Lemparkan humor cerdas atau referensi pop culture kalo pas.
             - **Visual:** Gunakan emoji yang relevan secara natural (🎶🔥🎧✨😌🕺💃).
+            - **Smart Responder:** Kalau ada tool yang butuh konfirmasi (seperti typo correction), langsung kasih respons yang meminta konfirmasi ke user dengan jelas dan friendly.
         
+        **RESPONS KHUSUS UNTUK PERTANYAAN IDENTITAS:**
+        Ketika user bertanya "siapa kamu", "kamu siapa", "who are you", atau pertanyaan serupa tentang identitas, SELALU jawab dengan:
+        "Gw adalah Moodify AI, asisten musikmu! 🎵 Gw di sini buat bantu lo nemuin lagu yang pas sama mood dan vibe lo. Mau dengerin musik apa hari ini?"
+          
         **Tugas Inti:**
         1.  **Deteksi & Klasifikasi Vibe:** Tugas PERTAMA dan UTAMA adalah menganalisis input user (eksplisit & implisit) dan WAJIB mengklasifikasikannya menjadi **SATU** dari mood berikut: `happy`, `sad`, `energy`, `calm`, `romantic`, `neutral`.
         2.  **Rekomendasi Cerdas:** Setelah mood terdeteksi, gunakan tool yang sesuai untuk memberikan rekomendasi lagu yang cocok. Selalu kasih alasan singkat kenapa lo merekomendasikan itu.
         3.  **Analisis Musik:** Jelasin karakteristik lagu (beat, lirik, genre, instrumen) pake bahasa yang gampang dimengerti.
         4.  **Musicopedia:** Jadi ensiklopedia musik berjalan buat cari info soal artis, band, lagu, atau sejarah musik.
         5.  **Playlist Kurator:** Buatin playlist simpel (3-5 lagu) berdasarkan tema dari user.
+        6.  **Pencarian Lirik:** Cari lirik lagu dengan koreksi AI otomatis untuk typo dan web search multi-source.
+        7.  **Smart Follow-up:** Kalau tool memberikan respons yang butuh konfirmasi (seperti typo correction), JANGAN tampilkan thought process, tapi langsung berikan respons yang ramah dan jelas meminta konfirmasi.
+        
+        ---
+        
+        **INTELLIGENT RESPONSE STRATEGY:**
+        
+        PENTING: Kalau kamu menggunakan tool dan hasilnya adalah pertanyaan konfirmasi (seperti "Apakah yang kamu maksudkan adalah...?"), jangan tampilkan thought process. Langsung berikan respons final yang:
+        1. Mengakui ada kemungkinan typo/kesalahan
+        2. Menawarkan koreksi dengan bahasa yang friendly
+        3. Meminta konfirmasi dengan jelas
+        4. Memberikan alternatif jika user tidak setuju
+        
+        **Contoh Smart Response:**
+        Tool Output: "Hmm, sepertinya ada typo nih. Apakah yang kamu maksudkan adalah **Right Now - One Direction**? Ketik 'ya' untuk konfirmasi..."
+        
+        Your Final Answer: "Eh, kayaknya ada typo dikit nih di nama lagunya 😅 Lo maksudnya **'Right Now - One Direction'** kah? Kalau iya, ketik 'ya' aja buat gw cariin liriknya. Kalau bukan, coba ketik ulang ya dengan ejaan yang lebih jelas! 🎵"
         
         ---
         
@@ -211,10 +208,11 @@ def setup_ai_agent(df: pd.DataFrame):
         
         **CARA MENGGUNAKAN TOOLS (SANGAT PENTING!):**
         
-        Kamu memiliki 3 tools yang bisa digunakan:
+        Kamu memiliki 4 tools yang bisa digunakan:
         1. **recommend_songs** - untuk memberikan rekomendasi lagu berdasarkan mood
         2. **analyze_features** - untuk menganalisis fitur musik 
         3. **search_info** - untuk mencari informasi tentang musik/artis
+        4. **search_lyrics** - untuk mencari lirik lagu dengan AI correction
         
         **ATURAN PEMANGGILAN TOOL:**
         - SELALU gunakan format: Action: [nama_tool]
@@ -246,12 +244,10 @@ def setup_ai_agent(df: pd.DataFrame):
             verbose=False,
         )
 
-        # Define tools dengan deskripsi yang lebih baik dan debugging
-        @debug_tool("recommend_songs")
+        # Define tools dengan deskripsi yang lebih baik dan debugging        @debug_tool("recommend_songs")
         def recommend_songs(mood: str) -> str:
             """Recommend songs with proper formatting and error handling"""
             try:
-                # IMPORTANT: Validate dan map mood ke valid mood
                 validated_mood = validate_and_map_mood(mood)
                 log_system(f"🎯 Mood validation: '{mood}' -> '{validated_mood}'")
 
@@ -260,7 +256,6 @@ def setup_ai_agent(df: pd.DataFrame):
                 if not result or "tidak ada lagu" in result.lower():
                     return f"Waduh, gak ada lagu yang cocok untuk mood '{validated_mood}' nih 😅 Coba mood yang lain ya!"
 
-                # Pastikan hasil bersih dan langsung return
                 return result.strip()
 
             except Exception as e:
@@ -269,17 +264,14 @@ def setup_ai_agent(df: pd.DataFrame):
 
         @debug_tool("analyze_features")
         def analyze_features(mood: str) -> str:
-            """Analisis fitur musik berdasarkan mood"""
+            """Analyze music features based on mood"""
             try:
-                # IMPORTANT: Validate dan map mood ke valid mood
                 validated_mood = validate_and_map_mood(mood)
                 log_system(
                     f"🎯 Analyze mood validation: '{mood}' -> '{validated_mood}'"
                 )
 
                 analysis_result = analyze_mood_features(df, validated_mood)
-
-                # Return HANYA analysis result tanpa wrapper text
                 return analysis_result.strip()
 
             except Exception as e:
@@ -288,8 +280,32 @@ def setup_ai_agent(df: pd.DataFrame):
 
         @debug_tool("search_info")
         def search_info(query: str) -> str:
-            """Cari informasi tentang musik, artis, atau band"""
+            """Search for music, artist, or band information"""
             return search_music_info(query)
+
+        @debug_tool("search_lyrics")
+        def search_lyrics(query: str) -> str:
+            """Cari lirik lagu dengan Gemini AI correction dan web search"""
+            try:
+                from src.services.lyrics_service import (
+                    extract_song_from_query,
+                    search_lyrics_with_gemini,
+                )
+
+                # Extract song info from query
+                song_query = extract_song_from_query(query)
+
+                # Search with Gemini AI
+                result = search_lyrics_with_gemini(song_query)
+
+                # Return result directly tanpa additional processing
+                return result
+
+            except ImportError:
+                return "❌ Fitur pencarian lirik belum tersedia. Install google-generativeai dengan: pip install google-generativeai"
+            except Exception as e:
+                log_error(e, f"Error in search_lyrics with query: {query}")
+                return f"❌ Maaf, ada error saat mencari lirik: {str(e)}"
 
         tools = [
             Tool(
@@ -334,11 +350,36 @@ def setup_ai_agent(df: pd.DataFrame):
                 func=search_info,
                 description="Berguna untuk mencari INFORMASI FAKTUAL dan data spesifik tentang dunia musik.",
             ),
+            Tool(
+                name="search_lyrics",
+                func=search_lyrics,
+                description="""
+                        WAJIB DIGUNAKAN ketika user meminta lirik lagu atau kata-kata lagu.
+                        Tool ini menggunakan Gemini AI untuk koreksi typo otomatis dan pencarian lirik langsung.
+                        
+                        Keywords trigger: 'lirik', 'lyrics', 'kata-kata lagu', 'syair', 'teks lagu', 'chord'.
+                        
+                        Contoh penggunaan:
+                        - User: "lirik right no one direction" -> Input: "right no one direction"
+                        - User: "cari lirik bohemian rapsody" -> Input: "bohemian rapsody" 
+                        - User: "kata-kata lagu shape of you" -> Input: "shape of you"
+                        
+                        Fitur khusus:
+                        - Otomatis koreksi typo menggunakan Gemini AI
+                        - Langsung berikan lirik tanpa konfirmasi tambahan
+                        - Output berformat rapi dengan judul, artis, dan lirik
+                        - Fallback ke web search jika Gemini tidak tersedia
+                        
+                        PENTING: SELALU berikan hasil pencarian langsung ke user, jangan minta konfirmasi.
+                        Input: Query pencarian lirik (judul lagu, artis, atau kombinasi)
+                        Output: Lirik lagu dengan format yang rapi
+                        """,
+            ),
         ]
 
         memory = ConversationBufferMemory()
-        memory_key="chat_history",
-        return_messages=False
+        memory_key = ("chat_history",)
+        return_messages = False
 
         # Custom prompt template dengan format yang lebih eksplisit
         custom_prompt_text = """Answer the following questions as best you can. You have access to the following tools:
@@ -376,6 +417,13 @@ SPECIAL INSTRUCTIONS FOR ANALYZE_FEATURES TOOL:
 - Input must be a valid mood only (happy, sad, energy, calm, romantic, neutral)
 - Do NOT add extra interpretation - return the tool output directly
 - Tool output is already formatted and complete
+
+SPECIAL INSTRUCTIONS FOR SEARCH_LYRICS TOOL:
+- When user asks for lyrics, use search_lyrics
+- Input should be the song title and artist name
+- ALWAYS return the tool result EXACTLY as provided - do NOT modify or expand
+- Do NOT add additional lyrics content beyond what the tool returns
+- The tool already provides complete formatted response
 
 Use the following format:
 
@@ -417,6 +465,7 @@ Thought:{agent_scratchpad}"""
         log_error(e, "Error during agent setup")
         return None
 
+
 # =============================================================================
 # DEBUG AGENT RUNNER
 # =============================================================================
@@ -454,10 +503,12 @@ def run_agent_with_debug(agent, user_input: str, enable_debug: bool = True):
         log_system("Memulai pemrosesan dengan AI Agent")
 
         # Run the agent executor
-        result = agent.invoke({
-         "input": user_input,
-         "chat_history": st.session_state.get("chat_history", "")
-        })
+        result = agent.invoke(
+            {
+                "input": user_input,
+                "chat_history": st.session_state.get("chat_history", ""),
+            }
+        )
 
         # Extract response from result
         response = (
@@ -478,8 +529,9 @@ def run_agent_with_debug(agent, user_input: str, enable_debug: bool = True):
         log_error(e, "Error during agent execution")
         return f"❌ Terjadi error: {str(e)}"
 
+
 def update_agent_memory_with_streamlit_history(agent):
-    if not agent or not hasattr(agent, 'memory'):
+    if not agent or not hasattr(agent, "memory"):
         return
     messages = st.session_state.get("messages", [])
     history = ""
@@ -489,6 +541,7 @@ def update_agent_memory_with_streamlit_history(agent):
         history += f"{role}: {content}\\n"
     agent.memory.chat_memory.clear()
     agent.memory.chat_memory.add_user_message(history)
+
 
 def toggle_debug_mode():
     """Toggle debug mode on/off"""

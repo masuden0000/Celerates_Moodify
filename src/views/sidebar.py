@@ -1,12 +1,15 @@
+"""
+Sidebar view - Chat history and navigation interface
+Manages chat sessions, history, and export functionality
+"""
+
 import json
 from datetime import datetime
 from typing import Dict, List
 
 import streamlit as st
 
-# =============================================================================
 # SIDEBAR COMPONENTS - Enhanced Beautiful Version
-# =============================================================================
 
 # Custom CSS for better styling
 def inject_sidebar_css():
@@ -106,7 +109,6 @@ def inject_sidebar_css():
     </style>
     """, unsafe_allow_html=True)
 
-
 def initialize_chat_history():
     """Initialize chat history in session state"""
     if "chat_sessions" not in st.session_state:
@@ -116,7 +118,6 @@ def initialize_chat_history():
         # Create first chat session
         new_chat_id = create_new_chat()
         st.session_state.current_chat_id = new_chat_id
-
 
 def create_new_chat() -> str:
     """Create a new chat session and return its ID"""
@@ -129,7 +130,6 @@ def create_new_chat() -> str:
         "updated_at": datetime.now().isoformat(),
     }
     return chat_id
-
 
 def update_chat_title(chat_id: str, messages: List[Dict]):
     """Update chat title based on first user message"""
@@ -155,7 +155,6 @@ def update_chat_title(chat_id: str, messages: List[Dict]):
                 st.session_state.chat_sessions[chat_id]["title"] = title
                 st.session_state.chat_sessions[chat_id]["updated_at"] = datetime.now().isoformat()
 
-
 def switch_chat(chat_id: str):
     """Switch to a different chat session"""
     if chat_id in st.session_state.chat_sessions:
@@ -166,7 +165,6 @@ def switch_chat(chat_id: str):
         # Switch to new chat
         st.session_state.current_chat_id = chat_id
         st.session_state.messages = st.session_state.chat_sessions[chat_id]["messages"].copy()
-
 
 def delete_chat(chat_id: str):
     """Delete a chat session"""
@@ -179,14 +177,12 @@ def delete_chat(chat_id: str):
             if remaining_chats:
                 switch_chat(remaining_chats[0])
 
-
 def clear_all_history():
     """Clear all chat history"""
     st.session_state.chat_sessions = {}
     new_chat_id = create_new_chat()
     st.session_state.current_chat_id = new_chat_id
     st.session_state.messages = []
-
 
 def serialize_datetime_objects(obj):
     """Convert datetime objects to ISO format strings for JSON serialization"""
@@ -199,7 +195,6 @@ def serialize_datetime_objects(obj):
     else:
         return obj
 
-
 def export_chat_history() -> str:
     """Export all chat history as JSON"""
     # Deep copy and serialize datetime objects
@@ -211,7 +206,6 @@ def export_chat_history() -> str:
         "total_sessions": len(st.session_state.chat_sessions),
     }
     return json.dumps(export_data, indent=2, ensure_ascii=False)
-
 
 def format_chat_date(date_str: str) -> str:
     """Format chat date for display"""
@@ -229,7 +223,6 @@ def format_chat_date(date_str: str) -> str:
             return created_date.strftime('%m/%d/%y')
     except:
         return "Recent"
-
 
 def render_chat_item(chat_id: str, chat_data: Dict, is_active: bool):
     """Render individual chat item with beautiful styling"""
@@ -269,14 +262,12 @@ def render_chat_item(chat_id: str, chat_data: Dict, is_active: bool):
                     delete_chat(chat_id)
                     st.rerun()
 
-
 def render_sidebar():
     """Render beautiful sidebar with enhanced styling"""
-    
+
     # Inject custom CSS
     inject_sidebar_css()
-    
-    # Initialize chat history
+
     initialize_chat_history()
 
     # Render sidebar using Streamlit's native sidebar
@@ -284,7 +275,7 @@ def render_sidebar():
         # Beautiful header
         st.markdown("""
         <div class="sidebar-header">
-            <h2>🎧 Moodify Chat</h2>
+            <h2>🎧 Moodify AI</h2>
             <p style="margin: 0; opacity: 0.9;">Your Music Mood Assistant</p>
         </div>
         """, unsafe_allow_html=True)
@@ -296,43 +287,51 @@ def render_sidebar():
                 new_chat_id = create_new_chat()
                 switch_chat(new_chat_id)
                 st.rerun()
-        
+
         with col2:
             # Chat count badge
             chat_count = len(st.session_state.chat_sessions)
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <div style="background: #4CAF50; color: white; text-align: center; 
                         border-radius: 20px; padding: 8px; font-size: 0.8rem; font-weight: bold;">
                 {chat_count}
             </div>
-            """, unsafe_allow_html=True)
-
-        # Custom divider
+            """,
+                unsafe_allow_html=True,
+            )  # Custom divider
         st.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
-        if st.button("📊 View Statistic"):
-         st.session_state.show_stats = True
 
-        if st.button("❌ Hide Statistic"):
-         st.session_state.show_stats = False
-         
-        # Chat History Section
+        # Statistics Toggle Button (Fixed Implementation)
+        # Initialize show_statistics in session state if not exists
+        if "show_statistics" not in st.session_state:
+            st.session_state.show_statistics = True
+
+        # Single toggle button with dynamic text
+        button_text = (
+            "❌ Hide Statistics"
+            if st.session_state.show_statistics
+            else "📊 View Statistics"
+        )
+
+        if st.button(button_text, key="sidebar_toggle_statistics"):
+            st.session_state.show_statistics = not st.session_state.show_statistics
+            st.rerun()  # Chat History Section
         if st.session_state.chat_sessions:
             st.markdown("### 💬 Recent Conversations")
-            
+
             # Sort chats by updated_at (most recent first)
             sorted_chats = sorted(
                 st.session_state.chat_sessions.items(),
                 key=lambda x: x[1]["updated_at"],
                 reverse=True,
             )
-    
-    
 
             # Render each chat item
-        for chat_id, chat_data in sorted_chats:
+            for chat_id, chat_data in sorted_chats:
                 is_active = chat_id == st.session_state.current_chat_id
                 render_chat_item(chat_id, chat_data, is_active)
-                
+
                 # Add subtle spacing
                 st.markdown("<div style='margin: 8px 0;'></div>", unsafe_allow_html=True)
 
@@ -350,7 +349,7 @@ def render_sidebar():
 
         # Action Buttons Section
         st.markdown("### ⚙️ Actions")
-        
+
         col1, col2 = st.columns(2)
 
         with col1:
@@ -392,7 +391,7 @@ def render_sidebar():
                 <small>This will delete all your chat history permanently.</small>
             </div>
             """, unsafe_allow_html=True)
-            
+
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("✅ Confirm", use_container_width=True, type="primary"):
@@ -413,12 +412,10 @@ def render_sidebar():
         </div>
         """, unsafe_allow_html=True)
 
-
 def handle_sidebar_actions():
     """Handle sidebar actions - simplified for native Streamlit"""
     # Actions are handled directly in render_sidebar()
     pass
-
 
 def sync_current_chat():
     """Sync current messages with current chat session"""
@@ -431,7 +428,6 @@ def sync_current_chat():
         current_title = st.session_state.chat_sessions[st.session_state.current_chat_id]["title"]
         if len(current_messages) > 0 and current_title == "New Chat":
             update_chat_title(st.session_state.current_chat_id, current_messages)
-
 
 # Additional utility functions for enhanced experience
 def get_chat_stats():
@@ -451,7 +447,6 @@ def get_chat_stats():
         "total_messages": total_messages,
         "most_active_chat": most_active_chat
     }
-
 
 def render_chat_stats():
     """Render chat statistics in a beautiful way"""

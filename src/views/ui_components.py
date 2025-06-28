@@ -1,3 +1,8 @@
+"""
+UI components - Main interface elements and data visualization
+Handles charts, statistics, and interactive components
+"""
+
 from typing import Dict
 
 import pandas as pd
@@ -252,9 +257,7 @@ def render_main_data_analysis(df):
         avg_songs_per_artist = len(df) / df['artist_name'].nunique()
         st.error(f"🎤 **Average Songs per Artist:** {avg_songs_per_artist:.1f}")
 
-# =============================================================================
 # MINIMALIST UI COMPONENTS
-# =============================================================================
 
 def render_statistics(df: pd.DataFrame):
     """Render minimalist app statistics"""

@@ -1,6 +1,23 @@
-# Streamlit
+# Streamlit - CRITICAL SECURITY
+.streamlit/
 .streamlit/secrets.toml
+.streamlit/config.toml
 *.streamlit
+secrets.toml
+config.toml
+
+# API Keys & Environment Variables - SECURITY CRITICAL
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+*.env
+.secrets
+secrets/
+api_keys.txt
+credentials.json
+service-account-key.json
 
 # Virtual Environments
 venv/

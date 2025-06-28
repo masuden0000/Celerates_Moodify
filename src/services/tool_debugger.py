@@ -6,8 +6,7 @@ import time
 from functools import wraps
 from typing import Any, Callable
 
-from src.core.debug_logger import log_error, log_tool_call, log_tool_response
-
+from src.services.debug_logger import log_error, log_tool_call, log_tool_response
 
 def debug_tool(tool_name: str):
     """Decorator untuk membuat tool bisa di-debug"""
@@ -37,7 +36,6 @@ def debug_tool(tool_name: str):
         return wrapper
 
     return decorator
-
 
 class ToolDebugger:
     """Class untuk debug tool calls secara manual"""

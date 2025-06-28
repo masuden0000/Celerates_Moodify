@@ -1,24 +1,30 @@
+"""
+Controller utilities - Session management and user input processing
+Handles core application logic and workflow coordination
+"""
+
 from datetime import datetime
 
 import pandas as pd
 import streamlit as st
 
-from src.core.music_analyzer import (
+from src.models.music_analyzer import (
     analyze_mood_features,
     extract_mood_from_text,
     get_song_recommendations,
     search_music_info,
 )
 
-# =============================================================================
 # UTILITY FUNCTIONS
-# =============================================================================
 
 
 def get_ai_response(agent, user_input: str, df: pd.DataFrame) -> tuple:
     """Get response from AI agent or fallback to basic responses"""
 
-    # Update analytics
+    # Check for lyrics confirmation context first
+    lyrics_confirmation_response = handle_lyrics_confirmation_context(user_input)
+    if lyrics_confirmation_response:
+        return lyrics_confirmation_response, []  # Update analytics
     if "analytics" not in st.session_state:
         st.session_state.analytics = {"total_queries": 0, "recommendations_given": 0}
 
@@ -27,17 +33,29 @@ def get_ai_response(agent, user_input: str, df: pd.DataFrame) -> tuple:
     if agent:
         try:
             response = agent.invoke({"input": user_input})
-            ai_response = response.get("output", "Sorry, I encountered an error.")
-
-            # Clean response dari debugging output
-            from src.core.response_cleaner import (
+            ai_response = response.get(
+                "output", "Sorry, I encountered an error."
+            )  # Clean response dari debugging output dengan intelligent handling
+            from src.controllers.response_cleaner import (
                 clean_agent_response,
                 extract_final_answer,
+                is_lyrics_confirmation_response,
             )
 
             cleaned_response = extract_final_answer(ai_response)
 
-            # Jika masih ada debugging info, paksa clean
+            # Special handling untuk lyrics search - langsung return tanpa cleaning tambahan
+            if is_lyrics_confirmation_response(
+                cleaned_response
+            ) or is_lyrics_confirmation_response(ai_response):
+                # Return langsung untuk lyrics responses
+                return (
+                    cleaned_response
+                    if is_lyrics_confirmation_response(cleaned_response)
+                    else ai_response
+                ), []
+
+            # Jika masih ada debugging info yang bukan lyrics confirmation, paksa clean
             if any(
                 debug_word in cleaned_response.lower()
                 for debug_word in ["thought:", "action:", "do i need"]
@@ -229,9 +247,73 @@ def process_user_input(user_input: str, agent, df: pd.DataFrame):
     st.session_state.messages.append(bot_message)
 
     # Sync with current chat session after messages are added
-    from src.ui.sidebar import sync_current_chat
+    from src.views.sidebar import sync_current_chat
 
     sync_current_chat()
 
     # Rerun to show new messages
     st.rerun()
+
+
+# LYRICS SEARCH CONTEXT MANAGEMENT
+
+
+def handle_lyrics_confirmation_context(user_input: str) -> str:
+    """
+    Handle lyrics search confirmation context
+
+    Args:
+        user_input: User input that might be a confirmation
+
+    Returns:
+        Response or empty string if not a confirmation
+    """
+    # Check if we're in lyrics confirmation context
+    if "lyrics_confirmation_query" not in st.session_state:
+        return ""
+
+    # Check if user is confirming
+    confirmation_words = ["ya", "iya", "yes", "benar", "betul", "ok", "oke", "confirm"]
+    denial_words = ["tidak", "no", "bukan", "gak", "enggak", "salah"]
+
+    user_lower = user_input.lower().strip()
+
+    if any(word in user_lower for word in confirmation_words):
+        # User confirmed, search with corrected query
+        query = st.session_state.lyrics_confirmation_query
+        del (
+            st.session_state.lyrics_confirmation_query
+        )  # Clear confirmation context        # Import lyrics service from the new MVC structure
+        from src.services.lyrics_service import search_lyrics_with_gemini
+
+        # Force search without asking for confirmation again
+        st.session_state.lyrics_skip_confirmation = True
+        result = search_lyrics_with_gemini(query)
+        if "lyrics_skip_confirmation" in st.session_state:
+            del st.session_state.lyrics_skip_confirmation
+
+        return result
+
+    elif any(word in user_lower for word in denial_words):
+        # User denied, clear context
+        del st.session_state.lyrics_confirmation_query
+        return "👍 No problem! Coba ketik query pencarian lirik yang baru ya. Format: 'lirik [judul lagu] - [nama artis]'"
+
+    return ""
+
+
+def is_lyrics_query(query: str) -> bool:
+    """Check if query is asking for lyrics"""
+    lyrics_keywords = [
+        "lirik",
+        "lyrics",
+        "chord",
+        "kord",
+        "kata-kata",
+        "syair",
+        "teks lagu",
+        "kata lagu",
+        "lirik lagu",
+    ]
+
+    return any(keyword in query.lower() for keyword in lyrics_keywords)

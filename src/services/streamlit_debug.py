@@ -6,9 +6,8 @@ from typing import Optional
 
 import streamlit as st
 
-from src.core.ai_agent import run_agent_with_debug, toggle_debug_mode
-from src.core.debug_logger import LogEntry, LogLevel, LogType, debug_logger
-
+from src.controllers.ai_agent import run_agent_with_debug, toggle_debug_mode
+from src.services.debug_logger import LogEntry, LogLevel, LogType, debug_logger
 
 class StreamlitDebugPanel:
     """Debug panel untuk Streamlit"""
@@ -195,11 +194,9 @@ class StreamlitDebugPanel:
             st.subheader("Tool Usage")
             st.bar_chart(tool_counts)
 
-
 def create_streamlit_debug_panel() -> StreamlitDebugPanel:
     """Factory function untuk membuat debug panel"""
     return StreamlitDebugPanel()
-
 
 def run_chat_with_debug(agent, user_input: str, enable_debug: bool = True) -> str:
     """
@@ -215,14 +212,12 @@ def run_chat_with_debug(agent, user_input: str, enable_debug: bool = True) -> st
     """
     return run_agent_with_debug(agent, user_input, enable_debug)
 
-
 # Streamlit component untuk debug panel
 def debug_sidebar():
     """Render debug controls in sidebar"""
     panel = create_streamlit_debug_panel()
     panel.render_debug_controls()
     return panel
-
 
 def debug_main_panel():
     """Render main debug panel"""

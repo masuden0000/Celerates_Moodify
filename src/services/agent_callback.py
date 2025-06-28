@@ -10,7 +10,7 @@ try:
     from langchain.callbacks.base import BaseCallbackHandler
     from langchain.schema import AgentAction, AgentFinish, LLMResult
 
-    from src.core.debug_logger import (
+    from src.services.debug_logger import (
         LogLevel,
         LogType,
         debug_logger,
@@ -282,7 +282,6 @@ except ImportError as e:
 
     def create_debug_callback():
         return None
-
 
 def create_debug_callback():
     """Factory function untuk membuat debug callback"""

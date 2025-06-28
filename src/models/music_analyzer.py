@@ -1,3 +1,8 @@
+"""
+Music analyzer - Core music analysis and recommendation engine
+Handles mood detection, music feature analysis, and recommendations
+"""
+
 import random
 from datetime import datetime
 from typing import Dict, List, Optional
@@ -5,7 +10,7 @@ from typing import Dict, List, Optional
 import numpy as np
 import pandas as pd
 
-from src.core.config import GENRE_EMOJIS, MOOD_EMOJIS, MOOD_KEYWORDS, SEARCH_AVAILABLE
+from src.config.app_config import GENRE_EMOJIS, MOOD_EMOJIS, MOOD_KEYWORDS, SEARCH_AVAILABLE
 
 # Valid moods for the system
 VALID_MOODS = [
@@ -53,15 +58,11 @@ MOOD_CRITERIA = {
     "neutral": {"valence": (0.3, 0.7), "energy": (0.3, 0.7), "tempo": (70, 140)},
 }
 
-# =============================================================================
 # CORE FUNCTIONALITY
-# =============================================================================
-
 
 def normalize_mood(mood: str) -> str:
     """Normalize mood string to lowercase"""
     return mood.lower().strip()
-
 
 def extract_mood_from_text(text: str) -> Optional[str]:
     """Extract mood from user input using advanced scoring"""
@@ -102,7 +103,6 @@ def extract_mood_from_text(text: str) -> Optional[str]:
         return detected_mood if mood_scores[detected_mood] > 0 else "neutral"
     return "neutral"
 
-
 def get_song_recommendations(df: pd.DataFrame, mood: str, n: int = 5) -> List[Dict]:
     """
     Advanced song recommendation system with diversified sampling
@@ -130,7 +130,6 @@ def get_song_recommendations(df: pd.DataFrame, mood: str, n: int = 5) -> List[Di
         print(f"Error in get_song_recommendations: {str(e)}")
         return []
 
-
 def apply_mood_criteria(df: pd.DataFrame, mood: str) -> pd.DataFrame:
     """
     Apply multi-criteria filtering based on audio features
@@ -146,7 +145,6 @@ def apply_mood_criteria(df: pd.DataFrame, mood: str) -> pd.DataFrame:
             ]
 
     return filtered_df
-
 
 def get_diversified_recommendations(
     df: pd.DataFrame, mood: str, n_recommendations: int = 5
@@ -193,7 +191,6 @@ def get_diversified_recommendations(
 
     return recommendations.head(n_recommendations)
 
-
 def weighted_sample(df: pd.DataFrame, n: int) -> pd.DataFrame:
     """
     Weighted sampling based on popularity with randomization factor
@@ -231,7 +228,6 @@ def weighted_sample(df: pd.DataFrame, n: int) -> pd.DataFrame:
     else:
         # Simple random sampling if no popularity column
         return df.sample(n=n)
-
 
 def format_song_recommendations(
     recommendations: List[Dict], mood: str, original_input: str = ""
@@ -294,7 +290,6 @@ def format_song_recommendations(
 
     return result
 
-
 def get_enhanced_recommendations(df: pd.DataFrame, mood_input: str, n: int = 5) -> str:
     """
     Main function for getting enhanced recommendations with formatting
@@ -315,7 +310,6 @@ def get_enhanced_recommendations(df: pd.DataFrame, mood_input: str, n: int = 5) 
 
     # Format and return results
     return format_song_recommendations(recommendations, detected_mood, mood_input)
-
 
 def analyze_mood_features(df: pd.DataFrame, mood: str) -> str:
     """Analisis statistik dan contoh lagu untuk mood tertentu."""
@@ -375,7 +369,6 @@ def analyze_mood_features(df: pd.DataFrame, mood: str) -> str:
 
     output += f"\n{'='*60}\n"
     return output
-
 
 def search_music_info(query: str) -> str:
     """

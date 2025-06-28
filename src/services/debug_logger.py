@@ -1,3 +1,8 @@
+"""
+Debug logger - Application logging and debugging utilities
+Provides structured logging and debug information
+"""
+
 import json
 import os
 import time
@@ -7,14 +12,12 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-
 class LogLevel(Enum):
     DEBUG = "DEBUG"
     INFO = "INFO"
     WARNING = "WARNING"
     ERROR = "ERROR"
     CRITICAL = "CRITICAL"
-
 
 class LogType(Enum):
     USER_INPUT = "USER_INPUT"
@@ -26,7 +29,6 @@ class LogType(Enum):
     ERROR = "ERROR"
     SYSTEM = "SYSTEM"
 
-
 @dataclass
 class LogEntry:
     timestamp: str
@@ -37,7 +39,6 @@ class LogEntry:
     duration: Optional[float] = None
     tool_name: Optional[str] = None
     error: Optional[str] = None
-
 
 class DebugLogger:
     def __init__(
@@ -331,57 +332,44 @@ Log Type Breakdown:
         self.enable_terminal_output = False
         print("🔧 Debug mode DISABLED")
 
-
 # Global debug logger instance
 debug_logger = DebugLogger()
-
 
 # Convenience functions
 def log_user_input(user_input: str):
     debug_logger.log_user_input(user_input)
 
-
 def log_llm_start(prompt: str):
     debug_logger.log_llm_start(prompt)
 
-
 def log_agent_thinking(thought: str):
     debug_logger.log_agent_thinking(thought)
-
 
 def log_tool_call(tool_name: str, tool_input: Any):
     start_time = time.time()
     debug_logger.log_tool_call(tool_name, tool_input, start_time)
     return start_time
 
-
 def log_tool_response(tool_name: str, response: Any, start_time: float):
     debug_logger.log_tool_response(tool_name, response, start_time)
-
 
 def log_final_output(output: str, total_duration: float):
     debug_logger.log_final_output(output, total_duration)
 
-
 def log_error(error: Exception, context: str = ""):
     debug_logger.log_error(error, context)
-
 
 def log_system(message: str, data: Optional[Dict[str, Any]] = None):
     debug_logger.log_system(message, data)
 
-
 def print_summary():
     debug_logger.print_summary()
-
 
 def clear_logs():
     debug_logger.clear_logs()
 
-
 def enable_debug_mode():
     debug_logger.enable_debug_mode()
-
 
 def disable_debug_mode():
     debug_logger.disable_debug_mode()

@@ -1,6 +1,9 @@
-# =============================================================================
+"""
+Application configuration - Constants and configuration settings
+Defines mood keywords, settings, and application constants
+"""
+
 # CONFIGURATION & CONSTANTS
-# =============================================================================
 
 # Mood keywords for advanced mood detection
 MOOD_KEYWORDS = {

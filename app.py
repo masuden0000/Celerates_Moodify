@@ -1,25 +1,31 @@
+"""
+Moodify AI - Music recommendation system with AI-powered mood analysis
+Main Streamlit application entry point
+"""
+
 from datetime import datetime
 
 import streamlit as st
 
-from src.core.ai_agent import setup_ai_agent, update_agent_memory_with_streamlit_history
-from src.core.utils import get_ai_response, initialize_session_state, process_user_input
-from src.data.data_manager import load_music_data
-from src.ui.sidebar import (
+from src.controllers.ai_agent import (
+    setup_ai_agent,
+    update_agent_memory_with_streamlit_history,
+)
+from src.controllers.utils import (
+    get_ai_response,
+    initialize_session_state,
+    process_user_input,
+)
+from src.models.data_manager import load_music_data
+from src.views.sidebar import (
     export_chat_history,
     handle_sidebar_actions,
     initialize_chat_history,
     render_sidebar,
     sync_current_chat,
 )
-
-# Import all modules
-from src.ui.styles import load_custom_css
-from src.ui.ui_components import render_main_data_analysis, render_statistics
-
-# =============================================================================
-# MAIN APPLICATION
-# =============================================================================
+from src.views.styles import load_custom_css
+from src.views.ui_components import render_main_data_analysis, render_statistics
 
 st.set_page_config(
     page_title="Moodify AI",
@@ -31,14 +37,10 @@ st.set_page_config(
 
 def main():
     """Main application function with minimalist design"""
-
-    # Initialize chat history first
+    initialize_session_state()
+    load_custom_css()
     initialize_chat_history()
-
-    # Handle sidebar actions
     handle_sidebar_actions()
-
-
 
     # Handle export download
     if "export_data" in st.session_state:
@@ -51,15 +53,14 @@ def main():
         )
         del st.session_state.export_data
 
-    # Render sidebar
     render_sidebar()
 
-    # Main content
     with st.container():
         st.markdown(
-            """        <div style="text-align: center; padding: 2rem 1rem;">
+            """
+        <div style="text-align: center; padding: 2rem 1rem;">
             <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem; color: #111827;">
-                💭 Moodify AI
+                🎧 Moodify AI
             </h1>
             <p style="font-size: 1.1rem; color: #4B5563; max-width: 700px; margin: auto;">
                 Halo! Selamat datang di <strong>Moodify</strong> — AI assistant musik yang siap nemenin kamu! 🎧<br>
@@ -70,23 +71,20 @@ def main():
         </div>
         """,
             unsafe_allow_html=True,
-        )  # Initialize
-    initialize_session_state()
-    load_custom_css()  # Load data and setup agent
+        )
+
     if st.session_state.df is None:
         with st.spinner("Loading database musik..."):
             st.session_state.df = load_music_data()
 
-    if st.session_state.agent is None:
+    if st.session_state.agent is None and st.session_state.df is not None:
         with st.spinner("Setting up AI assistant..."):
             st.session_state.agent = setup_ai_agent(st.session_state.df)
             update_agent_memory_with_streamlit_history(st.session_state.agent)
 
-
     df = st.session_state.df
     agent = st.session_state.agent
 
-    # Display messages
     for message in st.session_state.messages:
         if message["role"] == "user":
             st.markdown(
@@ -99,18 +97,17 @@ def main():
                 unsafe_allow_html=True,
             )
 
-    # Chat input
     user_input = st.chat_input("Cerita mood kamu atau tanya tentang musik...")
-    if user_input:
+    if user_input and df is not None and agent is not None:
         process_user_input(user_input, agent, df)
-        # Sync with current chat after new message
-        sync_current_chat()  # Statistics
-    st.markdown("---")
-    render_statistics(df)
+        sync_current_chat()
 
+    st.markdown("---")
+
+    if st.session_state.get("show_statistics", True) and df is not None:
+        render_statistics(df)
+        render_main_data_analysis(df)
 
 
 if __name__ == "__main__":
     main()
-if 'df' in st.session_state and st.session_state.df is not None:
-        render_main_data_analysis(st.session_state.df)

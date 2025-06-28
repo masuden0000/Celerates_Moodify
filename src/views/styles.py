@@ -1,9 +1,11 @@
+"""
+Styles - CSS and visual styling definitions
+Manages application appearance and theme
+"""
+
 import streamlit as st
 
-# =============================================================================
 # MINIMALIST STYLING
-# =============================================================================
-
 
 def load_custom_css():
     """Load minimal, clean CSS styling"""
@@ -188,6 +190,10 @@ def load_custom_css():
         transition: all 0.2s ease !important;
         width: 100% !important;
         padding: 0.75rem !important;
+    }
+    
+    .st-emotion-cache-1t02cvl {
+        display: none;
     }
     
     .stMain .stButton > button:hover,
