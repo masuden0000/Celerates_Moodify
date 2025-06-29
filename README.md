@@ -77,8 +77,17 @@ Aplikasi rekomendasi musik berbasis AI yang menggunakan **Cohere LLM** dan **Gem
 2. **Create virtual environment:**
    ```bash
    # Windows
+   # Command Prompt (cmd)
    py -3.11 -m venv venv
    venv\Scripts\activate
+    
+   # PowerShell
+   py -3.11 -m venv venv
+   venv\Scripts\Activate.ps1
+    
+   # Git Bash/WSL
+   py -3.11 -m venv venv
+   source venv/Scripts/activate
    
    # Linux/Mac
    python3.11 -m venv venv
